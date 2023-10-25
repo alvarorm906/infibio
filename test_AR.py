@@ -14,7 +14,8 @@ from System import TimeoutException
 XX = 'trial' # Needs to be changed at the start of a new experiment
 refpos = 2 # DIC_TL
 objpos = 4 # 63x objective	
-
+pocillos = 0 # number of pocillos with sample
+minutos = 0 # number of minutes to run the experiment
 ## fixed variables: 
 
 userPath = ('D:\Xisca\Experiments')
@@ -224,6 +225,8 @@ def photo_loop(minutos, pocillos):
                 Zen.Devices.Stage.MoveTo(lista_x[i] , lista_y[i]
 				Zen.Devices.Focus.MoveTo(lista_z[i])
                 take_pic()
+	
+		    
 Zen.Acquisition.StopLive()
 
 photo_loop(minutos, pocillos)
