@@ -16,16 +16,16 @@ refpos = 2 # DIC_TL
 objpos = 4 # 63x objective	
 pocillos = 0 # number of pocillos with sample
 minutos = 0 # number of minutes to run the experiment
-## fixed variables: 
 
+## fixed variables: 
 userPath = ('D:\Xisca\Experiments')
 wgPath = ('D:\Xisca\Experiments')
 path = r'D:\Xisca\Experiments\{}'.format(XX) 
 os.mkdir(path)
-userPath = (r'D:\Xisca\Experiments\{}'.format(XX))############## MODIFIED
+userPath = (r'D:\Xisca\Experiments\{}'.format(XX))
 intensities = {2:60, 3:80, 4:95}
 listx = [i*9000+posX for i in range(0,12)] # List with positions of x
-listy = [i*9000+posY for i in range(0,9)] # List with positions of y
+listy = [i*9000+posY for i in range(0,8)] # List with positions of y
 
 ## set functions
 
@@ -224,13 +224,13 @@ def photo_loop(minutos, pocillos):
     while time.time() < t_end or pos < pocillos:
         for i in range(pocillos):
 			try:
-				Zen.Devices.Stage.MoveTo(lista_x[i] , lista_y[i]
+				Zen.Devices.Stage.MoveTo(lista_x[i] , lista_y[i])
 				Zen.Devices.Focus.MoveTo(lista_z[i])
 				pos = i
 				zswaf
 				zswaf
 				take_pic()
-	        except:
+	        	except:
 				Zen.Application.Pause("Search field of interest and focus image!")
 				lista_x.append(Zen.Devices.Stage.ActualPositionX)
 				lista_y.append(Zen.Devices.Stage.ActualPositionY)
