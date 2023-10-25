@@ -10,24 +10,23 @@ import time
 from System import ApplicationException
 from System import TimeoutException
 
-## set variables
+## set variables to be changed:
+XX = 'trial' # Needs to be changed at the start of a new experiment
+refpos = 2 # DIC_TL
+objpos = 4 # 63x objective	
+
+## fixed variables: 
 
 userPath = ('D:\Xisca\Experiments')
 wgPath = ('D:\Xisca\Experiments')
-XX = 'trial' # Needs to be changed at the start of a new experiment
 path = r'D:\Xisca\Experiments\{}'.format(XX) 
 os.mkdir(path)
-userPath = (r'D:\Xisca\Experiments\{}'.format(XX))
-objpos = 4 # 63x objective		############## MODIFIED
+userPath = (r'D:\Xisca\Experiments\{}'.format(XX))############## MODIFIED
 intensities = {2:60, 3:80, 4:95}
-refpos = 2 # DIC_TL
 listx = [i*9000+posX for i in range(0,12)] # List with positions of x
 listy = [i*9000+posY for i in range(0,9)] # List with positions of y
 
 ## set functions
-
-
-
 
 def runSWAF(DetailScan_reloaded,
             delay=1,
@@ -139,7 +138,7 @@ Zen.Application.Documents.RemoveAll()
 camerasetting1 = ZenCameraSetting()
 ## Set camera frame to 1920 x 1216 and center
 camerasetting1.SetParameter('Frame', '0, 0, 1920, 1216')	########### MODIFIED
-## Set exposure time to 10 ms
+## Set exposure time to 3 ms
 camerasetting1.SetParameter('ExposureTime', '3.0')		########### MODIFIED
 ## Set binning mode to 2x2
 # camerasetting1.SetParameter('BinningList', "1")
@@ -189,175 +188,42 @@ lampint = Zen.Devices.Lamp.ActualIntensity
 #######################################################
 # Get and set objective position
 #######################################################
-##
-## Get current objective information
-## Show objective information
-# objname = Zen.Devices.ObjectiveChanger.ActualPositionName
-# objpos = Zen.Devices.ObjectiveChanger.ActualPosition
-# objmag = Zen.Devices.ObjectiveChanger.GetMagnificationByPosition(objpos)
-# objinfo = 'Current name: ' + objname + '\nCurrent position: ' + str(objpos) + '\nCurrent magnification: ' + str(objmag)
-# Zen.Windows.Show(objinfo)
-##
-##
-## Set objective changer to next objective position
-## Show name of current objective
 
 Zen.Devices.ObjectiveChanger.TargetPosition = objpos
 Zen.Devices.ObjectiveChanger.Apply()
-objpos = Zen.Devices.ObjectiveChanger.ActualPosition
-objname = Zen.Devices.ObjectiveChanger.ActualPositionName
-objmag = Zen.Devices.ObjectiveChanger.GetMagnificationByPosition(objpos)
-objinfo = 'New name: ' + objname + '\nNew position: ' + str(objpos) + '\nNew magnification: ' + str(objmag)
-# Zen.Windows.Show(objinfo)
-##
 #######################################################
 # Get and set reflector position
 #######################################################
-##
-## Get current reflector information
-## Show reflector information
-# refname = Zen.Devices.Reflector.ActualPositionName
-# refpos = Zen.Devices.Reflector.ActualPosition
-# refinfo = 'Current name: ' + refname + '\nCurrent position: ' + str(refpos) 
-# Zen.Windows.Show(refinfo)
-##
-##
-## Set reflector turret to next reflector position
-## Show name of current reflector
 
 Zen.Devices.Reflector.TargetPosition = refpos
 Zen.Devices.Reflector.Apply()
-refname = Zen.Devices.Reflector.ActualPositionName
-refpos = Zen.Devices.Reflector.ActualPosition
-refinfo = 'New name: ' + refname + '\nNew position: ' + str(refpos) 
-# Zen.Windows.Show(refinfo)
-##
+
 #######################################################
-# Get and set stage position
+# Define photo function and start the loop
 #######################################################
-##
-## Get current stage position
-## Show stage position 
-
-posX = Zen.Devices.Stage.ActualPositionX
-posY = Zen.Devices.Stage.ActualPositionY
-stageinfo = 'Stage Pos X: ' + str(posX) + '\nStagePos Y: ' + str(posY) 
-##Zen.Windows.Show(stageinfo)
-##
-##
-## Set stage position
-## Show new stage position 
-Zen.Devices.Stage.MoveTo(15000,11720)
-## an alternative to set the position
-#Zen.Devices.Stage.TargetPositionX = 15000
-#Zen.Devices.Stage.TargetPositionY = 11720
-#Zen.Devices.Stage.Apply()
-# stageinfo = 'New Stage Pos X: ' + str(Zen.Devices.Stage.ActualPositionX) + '\nNew Stage Pos Y: ' + str(Zen.Devices.Stage.ActualPositionY) 
-# Zen.Windows.Show(stageinfo)
-##
-#######################################################
-# Get and set focus position
-##
-## Get current focus position
-## Show focus position 
-focPos = Zen.Devices.Focus.ActualPosition
-focusinfo = r'Focus Pos: {}'.format(focPos) 
-#Zen.Windows.Show(focusinfo)
-##
-##
-## Set focus position
-## Show new focus position 
-newfocPos = 5984
-Zen.Devices.Focus.MoveTo(newfocPos)
-## an alternative to set the position
-#Zen.Devices.Focus.TargetPosition = newfocPos
-#Zen.Devices.Focus.Apply()
-# focusinfo = 'New Focus Pos: ' + str(Zen.Devices.Focus.ActualPosition) 
-# Zen.Windows.Show(focusinfo)
-##
-#######################################################
-## Image acquisition (v1)
-# Acquire an image and save it
-# Do autofocus in live image
-# Loop to go through the entire plate
-#######################################################
-##
-
-#for row in range(1, 9):  # Rows are numbered 1 to 8
-#    for col in range(0, 12):  # Columns are numbered 1 to 12
-#        well = extract_labels(row,col)  # Convert row number to letter (A-H)
-#        print(r'Processing well {}'.format(well))
-
-## Show live image
-# Zen.Acquisition.StartLive()
-# Zen.Acquisition.AutoExposure()
-# Zen.Application.Pause("Search field of interest and focus image!")
-## Do autofocus
-# Zen.Acquisition.FindAutofocus()
-## Snap image
-# image = Zen.Acquisition.AcquireImage()
-# Zen.Application.Documents.Add(image)
-## Close live image
-# Zen.Acquisition.StopLive()
-##
-## Save the image automatically with its assigned file name (in this case, "Snap-##.czi")
-# Zen.Application.Save(image)
-##
-#######################################################
-## Image acquisition (v3)
-# Acquire an image and save it
-# Do autofocus in live image
-# Moving step by step through the entire plate
-#######################################################
-##
-
-## set focus parameters
-
-    
-
-
-
-
-posX = Zen.Devices.Stage.ActualPositionX
-posY = Zen.Devices.Stage.ActualPositionY
-posZ = Zen.Devices.Focus.ActualPosition
-
-
-
 Zen.Acquisition.StartLive()
-Zen.Application.Pause("Search field of interest and focus image!") # Set acquisition at the beginning, before the loop
-
-def photo_loop(minutos, fcol, frow, lcol, lrow):
+def photo_loop(minutos, pocillos):
     # With this loop we can set an amount of minutes for the loop to continue. 
     # Its parameters are: Minutos -> amount of minutes for the loop to continue
-    # fcol -> first column with sample
-    # lcol -> last column with sample
-    # frow -> first row with sample
-    # lrow -> las row with sample
+    # pocillos -> number of pocillos with sample
     t_end = time.time() + 60 * minutos
+    loc = 0
     lista_x = []
     lista_y = []
+    lista_z = []
     while time.time() < t_end:
-        for i in range(fcol-1,lcol-1):
-            for j in range(frow-1,lrow-1):
-                if i or j not in lista_x or lista_y:
-                    Zen.Application.Pause("Search field of interest and focus image!")
-                    lista_x.append(Zen.Devices.Stage.ActualPositionX)
-                    lista_y.append(Zen.Devices.Stage.ActualPositionY)
-                    Zen.Devices.Stage.MoveTo(listx[i] , listy[j])
-                    take_pic()
+        for i in range(0,pocillos):
+            if loc < pocillos:
+				Zen.Application.Pause("Search field of interest and focus image!")
+				lista_x.append(Zen.Devices.Stage.ActualPositionX)
+				lista_y.append(Zen.Devices.Stage.ActualPositionY)
+				lista_z.append(Zen.Devices.Stage.ActualPosition)
+				take_pic()
+				loc += 1
+            else:
+                Zen.Devices.Stage.MoveTo(lista_x[i] , lista_y[i]
+				Zen.Devices.Focus.MoveTo(lista_z[i])
+                take_pic()
+Zen.Acquisition.StopLive()
 
-
-
-# Zen.Application.Pause("Search field of interest and focus image!")
-posX = Zen.Devices.Stage.ActualPositionX
-posY = Zen.Devices.Stage.ActualPositionY
-
-
-
-
-stageinfo = 'Stage Pos X: ' + str(posX) + '\nStagePos Y: ' + str(posY) 
-
-
-
-###############################################################
+photo_loop(minutos, pocillos)
