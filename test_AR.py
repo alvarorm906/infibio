@@ -209,11 +209,12 @@ def photo_loop(minutos, pocillos):
     # pocillos -> number of pocillos with sample
     t_end = time.time() + 60 * minutos
     loc = 0
+    pos = 0
     lista_x = []
     lista_y = []
     lista_z = []
-    while time.time() < t_end:
-        for i in range(0,pocillos):
+    while time.time() < t_end or pos < pocillos:
+        for i in range(pocillos):
             if loc < pocillos:
 				Zen.Application.Pause("Search field of interest and focus image!")
 				lista_x.append(Zen.Devices.Stage.ActualPositionX)
@@ -223,7 +224,8 @@ def photo_loop(minutos, pocillos):
 				loc += 1
             else:
                 Zen.Devices.Stage.MoveTo(lista_x[i] , lista_y[i]
-				Zen.Devices.Focus.MoveTo(lista_z[i])
+		Zen.Devices.Focus.MoveTo(lista_z[i])
+		pos = i
                 take_pic()
 	
 		    
