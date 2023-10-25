@@ -191,6 +191,24 @@ Zen.Devices.Reflector.TargetPosition = refpos
 Zen.Devices.Reflector.Apply()
 
 #######################################################
+# Get and set stage position (initial pos)
+#######################################################
+Zen.Devices.Stage.MoveTo(15000,11720) # (e.g. 1st well)
+# Focus the image z-position (manually)
+
+#######################################################
+## Change speed and acceleration of stage
+#######################################################
+hwset = ZenHardwareSetting()
+hwset.Load('MyStage',ZenSettingDirectory.Workgroup)
+hwset.SetParameter('MTBStageAxisX','ContinualSpeed',50)
+hwset.SetParameter('MTBStageAxisY','ContinualSpeed',50)
+hwset.SetParameter('MTBStageAxisX','Acceleration',10)
+hwset.SetParameter('MTBStageAxisY','Acceleration',10)
+Zen.Devices.ApplyHardwareSetting(hwset)
+##
+
+#######################################################
 # Define photo function and start the loop
 #######################################################
 Zen.Acquisition.StartLive()
