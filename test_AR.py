@@ -29,6 +29,12 @@ listy = [i*9000+posY for i in range(0,8)] # List with positions of y
 
 ## set functions
 
+##### Generar un pop up en loop que nos permita introducir las posiciones manualmente
+a={'A':1, 'B':2, 'C':3, 'D':4, 'E':5, 'F':6, 'G':7, 'H':8}   # Introducir letra correspondiente a la fila [A-H]
+b={1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}   # Introducir numero de columna
+welln = [a*9000,b*9000]
+###############################################################################################################
+
 def runSWAF(DetailScan_reloaded,
             delay=1,
             searchStrategy='Full',
@@ -230,14 +236,21 @@ def photo_loop(minutos, pocillos):
 				zswaf
 				zswaf
 				take_pic()
+				PositionInfo = '{:02d,:02d}'.format(welln[1,1], welln[1,2])
+                		TimeInfo = '{:04d}'.format(time.time())
+                		MyImage = PositionInfo + '_' + TimeInfo
+                		Zen.Application.Save(image,r'D:\Xisca\Experiments\{}\MyImage.czi'.format(XX))
 	        	except:
 				Zen.Application.Pause("Search field of interest and focus image!")
 				lista_x.append(Zen.Devices.Stage.ActualPositionX)
 				lista_y.append(Zen.Devices.Stage.ActualPositionY)
 				lista_z.append(Zen.Devices.Stage.ActualPosition)
 				take_pic()
-	            
-	                
+				PositionInfo = '{:02d,:02d}'.format(welln[1,1], welln[1,2])
+                		TimeInfo = '{:04d}'.format(time.time())
+                		MyImage = PositionInfo + '_' + TimeInfo
+                		Zen.Application.Save(image,r'D:\Xisca\Experiments\{}\MyImage.czi'.format(XX))
+	                           
 	
 		    
 Zen.Acquisition.StopLive()
