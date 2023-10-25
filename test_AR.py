@@ -88,18 +88,9 @@ if store_for_recall:
         print('StoreFocus (Definite Focus) failed.')
 
 def take_pic(): # Let's do a helper function to save code
-    ## Show live image
-    Zen.Acquisition.StartLive()
-
-    ## Double autofocus
-    zSWAF
-    zSWAF
     ## Snap image
     image = Zen.Acquisition.AcquireImage()
     Zen.Application.Documents.Add(image)
-    ## Close live image
-    Zen.Acquisition.StopLive()
-    ##
     ## Save the image  (in this case, "Snap-##.czi")
     Zen.Application.Save(image,r'D:\Xisca\Experiments\{}\{}_{}.czi'.format(XX, extract_labels(i,j),datetime.datetime.now()))
     
@@ -218,6 +209,8 @@ def photo_loop(minutos, pocillos):
 				Zen.Devices.Stage.MoveTo(lista_x[i] , lista_y[i]
 				Zen.Devices.Focus.MoveTo(lista_z[i])
 				pos = i
+				zswaf
+				zswaf
 				take_pic()
 	        except:
 				Zen.Application.Pause("Search field of interest and focus image!")
