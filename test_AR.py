@@ -36,7 +36,7 @@ intensities = {2:60, 3:80, 4:95}
 #welln = [a*9000,b*9000]
 ###############################################################################################################
 
-#def runSWAF(DetailScan_reloaded,
+#def runSWAF(SWAF_exp,
 #            delay=1,
  #           searchStrategy='Full',
  #           sampling=ZenSoftwareAutofocusSampling.Fine,
@@ -78,7 +78,7 @@ hwdelay = 1
  #   except ApplicationException as e:
  #       print('Application Exception : ', e.Message)
  #       print('FindSurface (Definite Focus) failed.')
-#zSWAF = runSWAF(DetailScan_reloaded,
+#zSWAF = runSWAF(SWAF_exp,
  #               delay=hwdelay,
  #               searchStrategy='Full',
  #               sampling=ZenSoftwareAutofocusSampling.Coarse,
@@ -99,6 +99,9 @@ def take_pic(): # Let's do a helper function to save code
     image = Zen.Acquisition.AcquireImage()
     Zen.Application.Documents.Add(image)
     ## Save the image  (in this case, "Snap-##.czi")
+    # PositionInfo = '{:02d,:02d}'.format(lista_x[i], lista_y[i])
+    # TimeInfo = '{:04d}'.format(time.time())
+    # MyImage = PositionInfo + '_' + TimeInfo
     #Zen.Application.Save(image,r'D:\Xisca\Experiments\{}\{}.czi'.format(XX,datetime.datetime.now()))
     
 def extract_labels(nr, nc):    
@@ -177,13 +180,13 @@ Zen.Application.Documents.RemoveAll()
 ## Create new camera settings
 camerasetting1 = ZenCameraSetting()
 ## Set camera frame to 1920 x 1216 and center
-camerasetting1.SetParameter('Frame', '0, 0, 1920, 1216')    ########### MODIFIED
+camerasetting1.SetParameter('Frame', '0, 0, 1920, 1216')
 ## Set exposure time to 3 ms
-camerasetting1.SetParameter('ExposureTime', '3.0')      ########### MODIFIED
+camerasetting1.SetParameter('ExposureTime', '3.0')
 ## Set binning mode to 2x2
 # camerasetting1.SetParameter('BinningList', "1")
 ## Set gain to 4x (opt)
-camerasetting1.SetParameter('AnalogGainModeList', '2')      ########### MODIFIED
+camerasetting1.SetParameter('AnalogGainModeList', '2')
 ## Save the setting
 camerasetting1.SaveAs("MyCameraSetting.czcs", ZenSettingDirectory.Workgroup)
 
@@ -249,10 +252,12 @@ Zen.Devices.Stage.MoveTo(15000,11720) # (e.g. 1st well)
 #######################################################
 #hwset = ZenHardwareSetting()
 #hwset.Load('MyStage',ZenSettingDirectory.Workgroup)
-#hwset.SetParameter('MTBStageAxisX','ContinualSpeed',50)
-#hwset.SetParameter('MTBStageAxisY','ContinualSpeed',50)
-#hwset.SetParameter('MTBStageAxisX','Acceleration',10)
-#hwset.SetParameter('MTBStageAxisY','Acceleration',10)
+# Enter the value in percentage (min 1, max 100).
+# Stage control is updated, after hardware setting is applied.
+# hwset.SetParameter('MTBStageAxisX','ContinualSpeed',50) # Number in percentage
+# hwset.SetParameter('MTBStageAxisY','ContinualSpeed',50) # Number in percentage
+# hwset.SetParameter('MTBStageAxisX','Acceleration',10) ## NO IDEA IF IT IS CORRECT
+# hwset.SetParameter('MTBStageAxisY','Acceleration',10) ## NO IDEA IF IT IS CORRECT
 #Zen.Devices.ApplyHardwareSetting(hwset)
 ##
 
