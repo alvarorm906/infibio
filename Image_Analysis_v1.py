@@ -1,7 +1,5 @@
 ###SCRIPT FOR 96 WELL-PLATE MANAGING ON THE MICROSCOPE####
 ##
-##
-## activate IO library
 
 from System.IO import File, Directory, FileInfo, Path
 import os
