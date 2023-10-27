@@ -88,7 +88,7 @@ intensities = {2:60, 3:80, 4:95}
  #       print('Application Exception : ', e.Message)
  #       print('StoreFocus (Definite Focus) failed.')
 
-def take_pic(): # Let's do a helper function to save code
+# def take_pic(): # Let's do a helper function to save code
     ## Snap image
     image = Zen.Acquisition.AcquireImage()
     Zen.Application.Documents.Add(image)
