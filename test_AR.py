@@ -30,64 +30,6 @@ intensities = {2:60, 3:80, 4:95}
 
 ## set functions
 
-#def runSWAF(SWAF_exp,
-#            delay=1,
-#            searchStrategy='Full',
-#            sampling=ZenSoftwareAutofocusSampling.Fine,
-#            relativeRangeIsAutomatic=False,
-#            relativeRangeSize=80,
-#            timeout=0):
-#
- #   # get current z-Position
- #   zSWAF = Zen.Devices.Focus.ActualPosition
- #   print('Z-Position before special SWAF :', zSWAF)
-
- #   # set SWAF parameters
- #   SWAF_exp.SetAutofocusParameters(searchStrategy=searchStrategy,
- #                                   sampling=sampling,
- #                                   relativeRangeIsAutomatic=relativeRangeIsAutomatic,
- #                                   relativeRangeSize=relativeRangeSize)
- #   try:
- #       print('Running special SWAF ...')
- #       zSWAF = Zen.Acquisition.FindAutofocus(SWAF_exp, timeoutSeconds=timeout)
- #   except ApplicationException as e:
- #       print('Application Exception : ', e.Message)
- #   except TimeoutException as e:
- #       print(e.Message)
-
-  #  print('Z-Position after initial SWAF : ', zSWAF)
-
-  #  return zSWAF
-
-#SWAF_exp = Zen.Acquisition.Experiments.ActiveExperiment
-
-# run_findsurface = True
-# store_for_recall = True
-# hwdelay = 1
-#if run_findsurface:
- #   try:
- #       # initial focussing via FindSurface to assure a good starting position
- #       Zen.Acquisition.FindSurface()
- #       print('Z-Position after FindSurface: ', Zen.Devices.Focus.ActualPosition)
- #   except ApplicationException as e:
- #       print('Application Exception : ', e.Message)
- #       print('FindSurface (Definite Focus) failed.')
-#zSWAF = runSWAF(SWAF_exp,
- #               delay=hwdelay,
- #               searchStrategy='Full',
- #               sampling=ZenSoftwareAutofocusSampling.Coarse,
- #               relativeRangeIsAutomatic=False,
- #               relativeRangeSize=80,
- #               timeout=0)
-#if store_for_recall:
- #   try:
- #       # store current focus position inside DF to use it with RecallFocus
- #       Zen.Acquisition.StoreFocus()
- #       print('Stored Offset inside Definte Focus.')
- #   except ApplicationException as e:
- #       print('Application Exception : ', e.Message)
- #       print('StoreFocus (Definite Focus) failed.')
-
 # def take_pic(): # Let's do a helper function to save code
     ## Snap image
     image = Zen.Acquisition.AcquireImage()
