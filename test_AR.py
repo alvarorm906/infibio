@@ -12,11 +12,11 @@ from System import ApplicationException
 from System import TimeoutException
 
 ## set variables to be changed:
-XX = 'trial2' # Needs to be changed at the start of a new experiment
+XX = 'trialXX' # Needs to be changed at the start of a new experiment
 refpos = 2 # DIC_TL
 objpos = 4 # 63x objective  
-pocillos = 0 # number of pocillos with sample
-minutos = 0 # number of minutes to run the experiment
+pocillos = 3 # number of pocillos with sample (change at the start of a new experiment)
+minutos = 3 # number of minutes to run the experiment (change at the start of a new experiment)
 well_name = ['01','02','03'] #wells filled with sample
 
 ## fixed variables: 
@@ -30,19 +30,13 @@ intensities = {2:60, 3:80, 4:95}
 
 ## set functions
 
-##### Generar un pop up en loop que nos permita introducir las posiciones manualmente
-#a={'A':1, 'B':2, 'C':3, 'D':4, 'E':5, 'F':6, 'G':7, 'H':8}   # Introducir letra correspondiente a la fila [A-H]
-#b={1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}   # Introducir numero de columna
-#welln = [a*9000,b*9000]
-###############################################################################################################
-
 #def runSWAF(SWAF_exp,
 #            delay=1,
- #           searchStrategy='Full',
- #           sampling=ZenSoftwareAutofocusSampling.Fine,
+#            searchStrategy='Full',
+#            sampling=ZenSoftwareAutofocusSampling.Fine,
 #            relativeRangeIsAutomatic=False,
- #           relativeRangeSize=80,
- #           timeout=0):
+#            relativeRangeSize=80,
+#            timeout=0):
 #
  #   # get current z-Position
  #   zSWAF = Zen.Devices.Focus.ActualPosition
@@ -67,9 +61,9 @@ intensities = {2:60, 3:80, 4:95}
 
 #SWAF_exp = Zen.Acquisition.Experiments.ActiveExperiment
 
-run_findsurface = True
-store_for_recall = True
-hwdelay = 1
+# run_findsurface = True
+# store_for_recall = True
+# hwdelay = 1
 #if run_findsurface:
  #   try:
  #       # initial focussing via FindSurface to assure a good starting position
@@ -98,13 +92,12 @@ def take_pic(): # Let's do a helper function to save code
     ## Snap image
     image = Zen.Acquisition.AcquireImage()
     Zen.Application.Documents.Add(image)
-    ## Save the image  (in this case, "Snap-##.czi")
     # PositionInfo = '{:02d,:02d}'.format(lista_x[i], lista_y[i])
     # TimeInfo = '{:04d}'.format(time.time())
     # MyImage = PositionInfo + '_' + TimeInfo
     #Zen.Application.Save(image,r'D:\Xisca\Experiments\{}\{}.czi'.format(XX,datetime.datetime.now()))
     
-def extract_labels(nr, nc):    
+# def extract_labels(nr, nc):    
     """
     Define helper function to be able to extract the well labels depending
     on the actual wellplate type. Currently supports 96, 384 and 1536 well plates.
@@ -115,18 +108,18 @@ def extract_labels(nr, nc):
     """
 
     # labeling schemes
-    labelX = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
-              '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24',
-              '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36',
-              '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', ]
+    # labelX = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
+      #        '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24',
+      #        '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36',
+      #        '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', ]
 
-    labelY = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-              'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF']
+    # labelY = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+      #        'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF']
 
-    lx = labelX[nc]
-    ly = labelY[nr]
+    # lx = labelX[nc]
+    # ly = labelY[nr]
 
-    return str(lx, ly)
+    # return str(lx, ly)
 
 
 def photo_loop(minutos, pocillos):
@@ -183,8 +176,6 @@ camerasetting1 = ZenCameraSetting()
 camerasetting1.SetParameter('Frame', '0, 0, 1920, 1216')
 ## Set exposure time to 3 ms
 camerasetting1.SetParameter('ExposureTime', '3.0')
-## Set binning mode to 2x2
-# camerasetting1.SetParameter('BinningList', "1")
 ## Set gain to 4x (opt)
 camerasetting1.SetParameter('AnalogGainModeList', '2')
 ## Save the setting
@@ -264,11 +255,9 @@ Zen.Devices.Stage.MoveTo(15000,11720) # (e.g. 1st well)
 #######################################################
 # Define photo function and start the loop
 #######################################################
-Zen.Application.Pause("hallo!")
+Zen.Application.Pause("Ajusta parámetros de autofoco y aceleración según la necesidad del experimento!")
+Zen.Application.Pause("Software Autofocus: Mode - Auto, Quality - Low Signal, Search - Smart, Sampling - Fine, Relative Range - Range of 50 microns")
+Zen.Application.Pause("Stage: Speed - 20%, Acceleration - 5%")
 Zen.Acquisition.StartLive()
-
-
-
-
 
 photo_loop(minutos, pocillos)
