@@ -9,6 +9,7 @@ import sys
 from System import ApplicationException
 from System import TimeoutException
 import string
+import random
 
 ## set variables to be changed:
 XX = 'trialXX' # Needs to be changed at the start of a new experiment
