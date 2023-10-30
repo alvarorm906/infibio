@@ -1,0 +1,41 @@
+input = getDirectory("Input folder for images");
+output = getDirectory("Output folder for results");
+run("Convert...", "input output output_format=[8-bit TIFF] interpolation=None scale=1");
+setOption("ScaleConversions", true);
+setOption("ScaleConversions", true);
+
+input = getDirectory("Input folder for images");
+output = getDirectory("Output folder for results");
+list = getFileList(input);
+Dialog.create("Variance filter");
+	Dialog.addMessage("Enter your settings here:");
+	Dialog.addNumber("Variance filter value:", 4);
+Dialog.show();
+filter_value = Dialog.getNumber();
+Dialog.create("Threshold filter");
+	Dialog.addMessage("Enter your settings here:");
+	Dialog.addNumber("Lower threshold value:", 150);
+Dialog.show();
+lower = Dialog.getNumber();
+
+for (image = 0; image < list.length; image++){
+	full = input + list[image];
+	open(full);
+	fn = getTitle();
+	run("8-bit");
+	run("Variance...", filter_value);
+	out = output + fn + "var";
+	saveAs("TIFF", out);
+	//run("8bit");
+	setThreshold(lower, 255);
+	run("Convert to Mask");
+	run("Fill Holes");
+	run("Analyze Particles...", "size=0.07-Infinity pixel show=[Bare Outlines] display clear include add composite");
+	out2 = output + fn + "outlines";
+	saveAs("TIFF", out2);
+	saveAs("Results", out2 + "Results.csv");
+	roiManager("Deselect");
+	roiManager("Save", out2 + "RoiSet.zip");
+	close();
+}
+close("*");
