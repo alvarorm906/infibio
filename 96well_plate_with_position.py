@@ -56,8 +56,7 @@ def photo_loop_pos(minutos, well_name):
             current_time = int(time.time() - start_time)
             current_time_str = str(current_time).zfill(4)
             well_image_count = image_counts[well_name_entry]  # Get the image count for the well
-            image_name = "{}.{}.czi".format(well_name_entry, well_image_count)
-            wellpos = "{}.{}".format(well_name_entry, well_image_count)
+            image_name = "{}.{}_{}.czi".format(well_name_entry, well_image_count, current_time_str)
             image_counts[well_name_entry] += 1  # Increment the image count
             Zen.Application.Save(image, r'{}\{}\{}.czi'.format(userPath, XX, image_name))
         except Exception as e:
@@ -79,20 +78,19 @@ def photo_loop_pos(minutos, well_name):
             except:
                 Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0], well_positions[well_name_entry][1])
                 photo()
-                listax[well_name_entry+str(.1)] = Zen.Devices.Stage.ActualPositionX 
-                listay[well_name_entry+str(.1)] = Zen.Devices.Stage.ActualPositionY # Moved to a specific position
+                # Moved to a specific position
                 Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0] + random.randint(-100, 100), well_positions[well_name_entry][1] + random.randint(-100, 100))
+                photo()
+                listax[well_name_entry+str(.1)] = Zen.Devices.Stage.ActualPositionX 
+                listay[well_name_entry+str(.1)] = Zen.Devices.Stage.ActualPositionY
+                Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0]+ random.randint(-100, 100), well_positions[well_name_entry][1] + random.randint(-100, 100))
                 photo()
                 listax[well_name_entry+str(.2)] = Zen.Devices.Stage.ActualPositionX 
                 listay[well_name_entry+str(.2)] = Zen.Devices.Stage.ActualPositionY
-                Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0]+ random.randint(-100, 100), well_positions[well_name_entry][1] + random.randint(-100, 100))
+                Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0] + random.randint(-100, 100), well_positions[well_name_entry][1] + random.randint(-100, 100))
                 photo()
                 listax[well_name_entry+str(.3)] = Zen.Devices.Stage.ActualPositionX 
                 listay[well_name_entry+str(.3)] = Zen.Devices.Stage.ActualPositionY
-                Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0] + random.randint(-100, 100), well_positions[well_name_entry][1] + random.randint(-100, 100))
-                photo()
-                listax[well_name_entry+str(.4)] = Zen.Devices.Stage.ActualPositionX 
-                listay[well_name_entry+str(.4)] = Zen.Devices.Stage.ActualPositionY
                 pos = well + 1
             
 
