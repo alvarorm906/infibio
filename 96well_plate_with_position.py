@@ -12,12 +12,12 @@ import string
 import random
 
 ## set variables to be changed:
-XX = 'trialXX' # Needs to be changed at the start of a new experiment
+XX = 'trialXY' # Needs to be changed at the start of a new experiment
 refpos = 2 # DIC_TL
 objpos = 4 # 63x objective  
 pocillos = 3 # number of pocillos with sample (change at the start of a new experiment)
 minutos = 3 # number of minutes to run the experiment (change at the start of a new experiment)
-well_name = ['01','02','03'] #wells filled with sample
+wells = ['B2','B3','C2','C3'] #wells filled with sample
 
 ## fixed variables: 
 userPath = ('D:\Xisca\Experiments')
@@ -25,18 +25,27 @@ wgPath = ('D:\Xisca\Experiments')
 path = r'D:\Xisca\Experiments\{}'.format(XX) 
 os.mkdir(path)
 intensities = {2:60, 3:80, 4:95}
-listx = [i*9000+posX for i in range(0,12)] # List with positions of x
-listy = [i*9000+posY for i in range(0,8)] # List with positions of y
-col = list(range(1,12))
-row = ['A','B','C','D','E','F','G','H']
-colpos = {col[i]:listx[i] for i in range(len(col))}
-rowpos = {row[i]:listy[i] for i in range(len(row))}
-
+#######################################################
+# Get and set stage position (initial pos)
+#######################################################
+Zen.Devices.Focus.MoveTo(7200.000)
+Zen.Devices.Stage.MoveTo(15000.000,11720.000)
+well_names = [r'{}{}'.format(chr(65 + i // 12),i % 12 + 1) for i in range(96)]# (e.g. 1st well)
+posX = Zen.Devices.Stage.ActualPositionX
+posY = Zen.Devices.Stage.ActualPositionY 
+listx = [i*9000+posX for i in range(0,12)]
+# List with positions of x
+listy = [i*9000+posY for i in range(0,8)]
+well_positions = {well_name: [listx[i % 12], listy[i // 12]] for i, well_name in enumerate(well_names)}# Dictionary with well positions and the xy positions
+for well_name, positions in well_positions.items():
+    print(r'{}: X = {}, Y = {}'.format(well_name,positions[0],positions[1]))
 
 def photo_loop_pos(minutos, well_name):
     t_end = time.time() + 60 * minutos
     start_time = time.time()
     pos = 0
+    listax = {}
+    listay = {}
 
     def photo():
         try:
@@ -48,31 +57,48 @@ def photo_loop_pos(minutos, well_name):
             current_time_str = str(current_time).zfill(4)
             well_image_count = image_counts[well_name_entry]  # Get the image count for the well
             image_name = "{}.{}.czi".format(well_name_entry, well_image_count)
+            wellpos = "{}.{}".format(well_name_entry, well_image_count)
             image_counts[well_name_entry] += 1  # Increment the image count
             Zen.Application.Save(image, r'{}\{}\{}.czi'.format(userPath, XX, image_name))
         except Exception as e:
-            print(r"Error in taking a photo: {}".format(str(e))
+            print(r"Error in taking a photo: {}".format(str(e)))
 
     while time.time() < t_end or pos < pocillos:
         image_counts = {well_name_entry: 0 for well_name_entry in well_name}
-        for well, well_name_entry in enumerate(well_name):  # Iterate with index and value
-            try:
-                Zen.Devices.Stage.MoveTo(colpos[well_name_entry[1]], rowpos[well_name_entry[0]])  # Moved to a specific position
-                photo()
-                Zen.Devices.Stage.MoveTo(colpos[well_name_entry[1]] + random.randint(-100, 100), rowpos[well_name_entry[0]] + random.randint(-100, 100))
-                photo()
-                Zen.Devices.Stage.MoveTo(colpos[well_name_entry[1]] + random.randint(-100, 100), rowpos[well_name_entry[0]] + random.randint(-100, 100))
-                photo()
-                Zen.Devices.Stage.MoveTo(colpos[well_name_entry[1]] + random.randint(-100, 100), rowpos[well_name_entry[0]] + random.randint(-100, 100))
-                photo()
-                Zen.Devices.Stage.MoveTo(colpos[well_name_entry[1]] + random.randint(-100, 100), rowpos[well_name_entry[0]] + random.randint(-100, 100))
-                photo()
-                pos = well + 1
-            except Exception as e:
-                print(r"Error in processing well {}: {}".format(well_name_entry,str(e)))
-
-
         
+        for well, well_name_entry in enumerate(wells):  # Iterate with index and value
+            try:
+                Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0], well_positions[well_name_entry][1])  # Moved to a specific position
+                photo()
+                Zen.Devices.Stage.MoveTo(listax[well_name_entry+str(.1)], listay[well_name_entry+str(.1)])
+                photo()
+                Zen.Devices.Stage.MoveTo(listax[well_name_entry+str(.2)], listay[well_name_entry+str(.2)])
+                photo()
+                Zen.Devices.Stage.MoveTo(listax[well_name_entry+str(.3)], listay[well_name_entry+str(.3)])
+                photo()
+            except:
+                Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0], well_positions[well_name_entry][1])
+                photo()
+                listax[well_name_entry+str(.1)] = Zen.Devices.Stage.ActualPositionX 
+                listay[well_name_entry+str(.1)] = Zen.Devices.Stage.ActualPositionY # Moved to a specific position
+                Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0] + random.randint(-100, 100), well_positions[well_name_entry][1] + random.randint(-100, 100))
+                photo()
+                listax[well_name_entry+str(.2)] = Zen.Devices.Stage.ActualPositionX 
+                listay[well_name_entry+str(.2)] = Zen.Devices.Stage.ActualPositionY
+                Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0]+ random.randint(-100, 100), well_positions[well_name_entry][1] + random.randint(-100, 100))
+                photo()
+                listax[well_name_entry+str(.3)] = Zen.Devices.Stage.ActualPositionX 
+                listay[well_name_entry+str(.3)] = Zen.Devices.Stage.ActualPositionY
+                Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0] + random.randint(-100, 100), well_positions[well_name_entry][1] + random.randint(-100, 100))
+                photo()
+                listax[well_name_entry+str(.4)] = Zen.Devices.Stage.ActualPositionX 
+                listay[well_name_entry+str(.4)] = Zen.Devices.Stage.ActualPositionY
+                pos = well + 1
+            
+
+
+            
+
 
 
 
