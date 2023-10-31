@@ -33,7 +33,7 @@ colpos = {col[i]:listx[i] for i in range(len(col))}
 rowpos = {row[i]:listy[i] for i in range(len(row))}
 
 
-def photo_loop_pos(minutos):
+def photo_loop_pos(minutos, well_name):
     t_end = time.time() + 60 * minutos
     start_time = time.time()
     pos = 0
@@ -51,7 +51,7 @@ def photo_loop_pos(minutos):
             image_counts[well_name_entry] += 1  # Increment the image count
             Zen.Application.Save(image, r'{}\{}\{}.czi'.format(userPath, XX, image_name))
         except Exception as e:
-            print(f"Error in taking a photo: {str(e)}")
+            print(r"Error in taking a photo: {}".format(str(e))
 
     while time.time() < t_end or pos < pocillos:
         image_counts = {well_name_entry: 0 for well_name_entry in well_name}
@@ -69,7 +69,7 @@ def photo_loop_pos(minutos):
                 photo()
                 pos = well + 1
             except Exception as e:
-                print(f"Error in processing well {well_name_entry}: {str(e)}")
+                print(r"Error in processing well {}: {}".format(well_name_entry,str(e)))
 
 
         
