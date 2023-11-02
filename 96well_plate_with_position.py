@@ -59,6 +59,7 @@ def photo_loop_pos(minutos, well_name):
             image_name = "{}.{}_{}".format(well_name_entry, well_image_count, current_time_str)
             image_counts[well_name_entry] += 1  # Increment the image count
             Zen.Application.Save(image, r'{}\{}\{}.czi'.format(userPath, XX, image_name))
+            Zen.Application.Documents.RemoveAll()
         except Exception as e:
             print(r"Error in taking a photo: {}".format(str(e)))
 
