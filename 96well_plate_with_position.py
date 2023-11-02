@@ -37,8 +37,7 @@ listx = [i*9000+posX for i in range(0,12)]
 # List with positions of x
 listy = [i*9000+posY for i in range(0,8)]
 well_positions = {well_name: [listx[i % 12], listy[i // 12]] for i, well_name in enumerate(well_names)}# Dictionary with well positions and the xy positions
-for well_name, positions in well_positions.items():
-    print(r'{}: X = {}, Y = {}'.format(well_name,positions[0],positions[1]))
+
 
 def photo_loop_pos(minutos, well_name):
     t_end = time.time() + 60 * minutos
@@ -77,6 +76,7 @@ def photo_loop_pos(minutos, well_name):
                 photo()
             except:
                 Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0], well_positions[well_name_entry][1])
+                Zen.Application.Pause("Ajusta foco")
                 photo()
                 # Moved to a specific position
                 Zen.Devices.Stage.MoveTo(well_positions[well_name_entry][0] + random.randint(-100, 100), well_positions[well_name_entry][1] + random.randint(-100, 100))
@@ -170,4 +170,4 @@ Zen.Application.Pause("Stage: Speed - 20%, Acceleration - 5%")
 Zen.Acquisition.StartLive()
 
 # Run the photo_loop_pos function
-photo_loop_pos(minutos)
+photo_loop_pos(minutos, wells)
