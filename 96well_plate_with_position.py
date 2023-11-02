@@ -159,10 +159,11 @@ Zen.Devices.Stage.MoveTo(15000,11720) # (e.g. 1st well)
 #######################################################
 # Introduce parameters and start the loop
 #######################################################
-Zen.Application.Pause("Check camera, autofocus and stage settings!")
+Zen.Application.Pause("Check camera, auto-save, autofocus and stage settings!")
 Zen.Application.Pause("Software Autofocus: Mode - Auto, Quality - Low Signal, Search - Smart, Sampling - Fine, Relative Range - Range of 50 microns")
 Zen.Application.Pause("Stage: Speed - 20%, Acceleration - 5%")
 Zen.Application.Pause("Camera: Exposure time - 3 ms, Acquisition ROI - 1920 x 1216, Gain - 4x")
+Zen.Application.Pause("Acquisition - Auto Save - Close CZI Image After Acquisition")
 Zen.Acquisition.StartLive()
 
 # Run the photo_loop_pos function
