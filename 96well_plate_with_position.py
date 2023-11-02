@@ -55,7 +55,7 @@ def photo_loop_pos(minutos, well_name):
             current_time = int(time.time() - start_time)
             current_time_str = str(current_time).zfill(4)
             well_image_count = image_counts[well_name_entry]  # Get the image count for the well
-            image_name = "{}.{}_{}.czi".format(well_name_entry, well_image_count, current_time_str)
+            image_name = "{}.{}_{}".format(well_name_entry, well_image_count, current_time_str)
             image_counts[well_name_entry] += 1  # Increment the image count
             Zen.Application.Save(image, r'{}\{}\{}.czi'.format(userPath, XX, image_name))
         except Exception as e:
