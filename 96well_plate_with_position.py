@@ -15,8 +15,8 @@ import random
 XX = 'trialXY' # Needs to be changed at the start of a new experiment
 refpos = 2 # DIC_TL
 objpos = 4 # 63x objective  
-pocillos = 3 # number of pocillos with sample (change at the start of a new experiment)
-minutos = 3 # number of minutes to run the experiment (change at the start of a new experiment)
+pocillos = 4 # number of pocillos with sample (change at the start of a new experiment)
+minutos = 70 # number of minutes to run the experiment (change at the start of a new experiment)
 wells = ['B2','B3','C2','C3'] #wells filled with sample
 
 ## fixed variables: 
@@ -25,18 +25,19 @@ wgPath = ('D:\Xisca\Experiments')
 path = r'D:\Xisca\Experiments\{}'.format(XX) 
 os.mkdir(path)
 intensities = {2:60, 3:80, 4:95}
+
 #######################################################
 # Get and set stage position (initial pos)
 #######################################################
 Zen.Devices.Focus.MoveTo(7200.000)
-Zen.Devices.Stage.MoveTo(15000.000,11720.000)
-well_names = [r'{}{}'.format(chr(65 + i // 12),i % 12 + 1) for i in range(96)]# (e.g. 1st well)
+Zen.Devices.Stage.MoveTo(15000.000,11720.000) # (position of A1)
+well_names = [r'{}{}'.format(chr(65 + i // 12),i % 12 + 1) for i in range(96)]
 posX = Zen.Devices.Stage.ActualPositionX
 posY = Zen.Devices.Stage.ActualPositionY 
 listx = [i*9000+posX for i in range(0,12)]
 # List with positions of x
 listy = [i*9000+posY for i in range(0,8)]
-well_positions = {well_name: [listx[i % 12], listy[i // 12]] for i, well_name in enumerate(well_names)}# Dictionary with well positions and the xy positions
+well_positions = {well_name: [listx[i % 12], listy[i // 12]] for i, well_name in enumerate(well_names)} # Dictionary with well positions and the xy positions
 
 
 def photo_loop_pos(minutos, well_name):
@@ -106,7 +107,6 @@ def photo_loop_pos(minutos, well_name):
 ##
 ## Remove all open images
 Zen.Application.Documents.RemoveAll()
-
 ## Create new camera settings
 camerasetting1 = ZenCameraSetting()
 ## Set camera frame to 1920 x 1216 and center
@@ -117,9 +117,6 @@ camerasetting1.SetParameter('ExposureTime', '3.0')
 camerasetting1.SetParameter('AnalogGainModeList', '2')
 ## Save the setting
 camerasetting1.SaveAs("MyCameraSetting.czcs", ZenSettingDirectory.Workgroup)
-
-## Set camera parameters to default
-# Zen.Acquisition.ActiveCamera.SetDefaultSetting()
 ## Apply camera setting
 Zen.Acquisition.ActiveCamera.ApplyCameraSetting(camerasetting1)
 
