@@ -94,14 +94,6 @@ def photo_loop_pos(minutos, well_name):
                 listax[well_name_entry+str(.4)] = Zen.Devices.Stage.ActualPositionX 
                 listay[well_name_entry+str(.4)] = Zen.Devices.Stage.ActualPositionY
                 pos = well + 1
-            
-
-
-            
-
-
-
-
 
 
 #######################################################
@@ -123,7 +115,7 @@ camerasetting1.SetParameter('AnalogGainModeList', '2')
 camerasetting1.SaveAs("MyCameraSetting.czcs", ZenSettingDirectory.Workgroup)
 
 ## Set camera parameters to default
-Zen.Acquisition.ActiveCamera.SetDefaultSetting()
+# Zen.Acquisition.ActiveCamera.SetDefaultSetting()
 ## Apply camera setting
 Zen.Acquisition.ActiveCamera.ApplyCameraSetting(camerasetting1)
 
@@ -166,9 +158,10 @@ Zen.Devices.Stage.MoveTo(15000,11720) # (e.g. 1st well)
 #######################################################
 # Introduce parameters and start the loop
 #######################################################
-Zen.Application.Pause("Ajusta parámetros de autofoco y aceleración según la necesidad del experimento!")
+Zen.Application.Pause("Check camera, autofocus and stage settings!")
 Zen.Application.Pause("Software Autofocus: Mode - Auto, Quality - Low Signal, Search - Smart, Sampling - Fine, Relative Range - Range of 50 microns")
 Zen.Application.Pause("Stage: Speed - 20%, Acceleration - 5%")
+Zen.Application.Pause("Camera: Exposure time - 3 ms, Acquisition ROI - 1920 x 1216, Gain - 4x")
 Zen.Acquisition.StartLive()
 
 # Run the photo_loop_pos function
