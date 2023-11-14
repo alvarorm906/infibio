@@ -25,7 +25,6 @@ def photo_seconds(minutos, wait):
     start_time=time.time()
     while time.time() < t_end:
         Zen.Acquisition.FindAutofocus()
-        Zen.Acquisition.FindAutofocus()
         image = Zen.Acquisition.AcquireImage()
         Zen.Application.Documents.Add(image)
         current_time = int(time.time() - start_time)
