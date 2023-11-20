@@ -46,10 +46,9 @@ def photo_seconds(minutos, wait, z):
 #######################################################
 ##
 ## Remove all open images
-## Define experiment
-exp = ZenExperiment()
-## Load experiment
-exp.Load('C:\Users\34682\Documents\Carl Zeiss\ZEN\Documents\Experiment Setups\Xisca_setup.czexp')
+exp = Zen.Acquisition.Experiments.GetByName('Xisca_setup.czexp')
+img = Zen.Acquisition.Execute(exp)
+
 
 
 ## Set camera parameters to default
