@@ -7,7 +7,7 @@ import csv
 from System import ApplicationException
 from System import TimeoutException
 
-XX = 'TrialCheckZ' # Needs to be changed at the start of a new experiment
+XX = 'TrialCheckZ2' # Needs to be changed at the start of a new experiment
 refpos = 2 # DIC_TL
 objpos = 4 # 63x objective  
 userPath = ('D:\Xisca\Experiments')
@@ -18,7 +18,7 @@ intensities = {2:60, 3:80, 4:95}
 minutos = 15
 wait = 6.5
 zpos = []
-def photo_seconds(minutos, wait):
+def photo_seconds(minutos, wait, z):
     # With this loop we can set an amount of minutes for the loop to continue. 
     # Its parameters are: Minutos -> amount of minutes for the loop to continue
     # Wait -> number of seconds to wait until the next picture.
@@ -36,6 +36,9 @@ def photo_seconds(minutos, wait):
         Zen.Application.Save(image, r'{}\{}\{}.czi'.format(userPath, XX, image_name))
         Zen.Application.Documents.RemoveAll()
         time.sleep(wait)
+        if round((t_end/60-time.time()/60),0) % 5 == 0:
+            Zen.Devices.Focus.MoveTo(z)
+            Zen.Acquisition.FindAutofocus()
 
 
 #######################################################
@@ -43,21 +46,11 @@ def photo_seconds(minutos, wait):
 #######################################################
 ##
 ## Remove all open images
-Zen.Application.Documents.RemoveAll()
+## Define experiment
+exp = ZenExperiment()
+## Load experiment
+exp.Load('C:\Users\34682\Documents\Carl Zeiss\ZEN\Documents\Experiment Setups\Xisca_setup.czexp')
 
-exp = Zen.Acquisition.Experiments.GetByName(ZEN_Experiment)
-img = Zen.Acquisition.Execute(exp)
-
-## Create new camera settings
-camerasetting1 = ZenCameraSetting()
-## Set camera frame to 1920 x 1216 and center
-camerasetting1.SetParameter('Frame', '0, 0, 1920, 1216')
-## Set exposure time to 3 ms
-camerasetting1.SetParameter('ExposureTime', '5.0')
-## Set gain to 4x (opt)
-camerasetting1.SetParameter('AnalogGainModeList', '2')
-## Save the setting
-camerasetting1.SaveAs("MyCameraSetting.czcs", ZenSettingDirectory.Workgroup)
 
 ## Set camera parameters to default
 #Zen.Acquisition.ActiveCamera.SetDefaultSetting()
@@ -100,5 +93,6 @@ Zen.Devices.Reflector.Apply()
 #######################################################
 Zen.Acquisition.StartLive()
 Zen.Application.Pause("Search field of interest and focus image!")
-photo_seconds(minutos, wait)
+origen = Zen.Devices.Focus.ActualPosition 
+photo_seconds(minutos, wait, origen)
 print(zpos)
