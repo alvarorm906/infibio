@@ -45,6 +45,9 @@ def photo_seconds(minutos, wait):
 ## Remove all open images
 Zen.Application.Documents.RemoveAll()
 
+exp = Zen.Acquisition.Experiments.GetByName(ZEN_Experiment)
+img = Zen.Acquisition.Execute(exp)
+
 ## Create new camera settings
 camerasetting1 = ZenCameraSetting()
 ## Set camera frame to 1920 x 1216 and center
