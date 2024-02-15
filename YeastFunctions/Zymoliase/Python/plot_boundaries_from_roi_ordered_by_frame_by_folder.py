@@ -7,159 +7,160 @@ from read_roi import read_roi_file
 import shutil
 from statsmodels.nonparametric.smoothers_lowess import lowess
 
-# Simulando la función calculate_mass_center()
+# Simulating the function calculate_mass_center()
 def calculate_mass_center(x, y):
     x_center = np.mean(x)
     y_center = np.mean(y)
     return x_center, y_center
 
-# Simulando la función angulos()
-def angulos(x, y, x_center, y_center):
+# Simulating the function angles()
+def angles(x, y, x_center, y_center):
     x_rel = x - x_center
     y_rel = y - y_center
     r = np.sqrt(x_rel ** 2 + y_rel ** 2)
     theta = np.arctan2(y_rel, x_rel)
     return x_rel, y_rel, theta, r
 
-# Ruta a la carpeta raíz
-carpeta_raiz = "C:/Users/Visitor/Desktop/alvaro/Zymoliase_analyse_trials/"
+# Path to root folder
+folder_raiz = "C:/Users/Visitor/Desktop/alvaro/Zymoliase_analyse_trials/"
 
-# Función para procesar los archivos ROI en una carpeta
-def procesar_carpeta(carpeta):
-    for dirpath, dirnames, filenames in os.walk(carpeta):
+# Function to process ROI files in a folder
+def procesar_folder(folder):
+    for dirpath, dirnames, filenames in os.walk(folder):
         if 'RoiSet' in dirnames and 'export.csv' in filenames:
-            carpeta_roi = os.path.join(dirpath, 'RoiSet')
-            ruta_csv = os.path.join(dirpath, 'export.csv')
-            procesar_archivos_roi(carpeta_roi, ruta_csv)  # <-- Pass carpeta_roi and ruta_csv as arguments
+            folder_roi = os.path.join(dirpath, 'RoiSet')
+            path_csv = os.path.join(dirpath, 'export.csv')
+            procesar_archivos_roi(folder_roi, path_csv)  # <-- Pass folder_roi and path_csv as arguments
 
-# Función para procesar los archivos ROI en una carpeta específica
-def procesar_archivos_roi(carpeta_roi, ruta_csv):
-    df = pd.read_csv(ruta_csv, skiprows=range(1, 4))
-    carpeta_graficos = os.path.join(os.path.dirname(carpeta_roi), 'graficos')
-    # Check if the 'graficos' folder already exists
-    if not os.path.exists(carpeta_graficos):
-        os.makedirs(carpeta_graficos)
+# Function to process ROI files in a specific folder
+def procesar_archivos_roi(folder_roi, path_csv):
+    df = pd.read_csv(path_csv, skiprows=range(1, 4))
+    plots_folder = os.path.join(os.path.dirname(folder_roi), 'plots')
+    # Check if the 'plots' folder already exists
+    if not os.path.exists(plots_folder):
+        os.makedirs(plots_folder)
     else:
-        print(f"'graficos' folder already exists in {os.path.dirname(carpeta_roi)}. Proceeding to the next folder.")
+        print(f"'plots' folder already exists in {os.path.dirname(folder_roi)}. Proceeding to the next folder.")
         return
-    os.makedirs(carpeta_graficos, exist_ok=True)
-    graficas_angulos_por_numero = {}
-    graficas_perfiles_por_numero = {}
+    os.makedirs(plots_folder, exist_ok=True)
+    angle_plots_by_number = {}
+    profile_plots_by_number = {}
 
-    # Función para procesar un archivo ROI específico
+    # Function to process a specific ROI file
     def procesar_archivo_roi(roi_file):
-        ruta_archivo_roi = os.path.join(carpeta_roi, roi_file)
+        path_archivo_roi = os.path.join(folder_roi, roi_file)
         # Leer el archivo de ROI
-        rois = read_roi_file(ruta_archivo_roi)
+        rois = read_roi_file(path_archivo_roi)
 
-        # Procesar los datos del ROI
+        # Process the ROI data
         for roi_name, roi_data in rois.items():
-            # Obtener el número asociado al ROI
-            numero_asociado = df.loc[df['LABEL'] == roi_name.split('.')[0], 'TRACK_ID'].iloc[0]
+            # Obtain number associated to ROI
+            number_associated = df.loc[df['LABEL'] == roi_name.split('.')[0], 'TRACK_ID'].iloc[0]
 
-            # Obtener las coordenadas x e y del ROI
+            # Obtain ROI's xy coordinates
             x = np.array(roi_data['x'])
             y = np.array(roi_data['y'])
             smoothed_x = lowess(x, range(len(x)), frac=0.1, return_sorted=False)
             smoothed_y = lowess(y, range(len(y)), frac=0.1, return_sorted=False)
-            # Calcular el centro de masa
+            
+            # Calculate mass center
             x_center, y_center = calculate_mass_center(x, y)
-            # Duplicar el primer punto al final para cerrar la gráfica
+            
+            # Double the first point at the end to close the plot
             smoothed_x = np.append(smoothed_x, smoothed_x[0])
             smoothed_y = np.append(smoothed_y, smoothed_y[0])
-            # Generar gráfica de ángulos polares
-            fig_angulos = plt.figure()
-            ax_angulos = fig_angulos.add_subplot(111, projection='polar')
-            x_rel, y_rel, theta, r = angulos(smoothed_x, smoothed_y, x_center, y_center)
-            ax_angulos.plot(theta, r, '-')
-            plt.title(f"grafica_angulos_{numero_asociado}_{roi_name}")
-            plt.savefig(os.path.join(carpeta_graficos, f"grafica_angulos_{numero_asociado}_{roi_name}.png"))
-            plt.close(fig_angulos)
+            
+            # Generate polar angles plot
+            fig_angles = plt.figure()
+            ax_angles = fig_angles.add_subplot(111, projection='polar')
+            x_rel, y_rel, theta, r = angles(smoothed_x, smoothed_y, x_center, y_center)
+            ax_angles.plot(theta, r, '-')
+            plt.title(f"plot_angles_{number_associated}_{roi_name}")
+            plt.savefig(os.path.join(plots_folder, f"plot_angles_{number_associated}_{roi_name}.png"))
+            plt.close(fig_angles)
 
-            # Generar gráficos de perfiles
-            fig_perfiles = plt.figure()
-            ax_perfiles = fig_perfiles.add_subplot(111)
+            # Generate profile plot
+            fig_profiles = plt.figure()
+            ax_profiles = fig_profiles.add_subplot(111)
            
             x_mean = np.mean(x)
             y_mean = np.mean(y)
             x = x - x_mean
             y = y - y_mean
 
-            # Aplicar suavizado utilizando un promedio móvil
-            # Ajustar el tamaño de la ventana para un perfil más suave o más rugoso
+            # Smoothing the plot
+            # Adjust windows amplitud for a smoother or rougher profile
             smoothed_x = lowess(x, range(len(x)), frac=0.1, return_sorted=False)
             smoothed_y = lowess(y, range(len(y)), frac=0.1, return_sorted=False)
 
-            ax_perfiles.plot(smoothed_x, label='x(L)')
-            ax_perfiles.plot(smoothed_y, label='y(L)')
-            ax_perfiles.legend()
-            plt.title(f"grafica_perfiles_{numero_asociado}_{roi_name}")
-            plt.savefig(os.path.join(carpeta_graficos, f"grafica_perfiles_{numero_asociado}_{roi_name}.png"))
-            plt.close(fig_perfiles)
+            ax_profiles.plot(smoothed_x, label='x(L)')
+            ax_profiles.plot(smoothed_y, label='y(L)')
+            ax_profiles.legend()
+            plt.title(f"plot_profiles_{number_associated}_{roi_name}")
+            plt.savefig(os.path.join(plots_folder, f"plot_profiles_{number_associated}_{roi_name}.png"))
+            plt.close(fig_profiles)
 
-            # Almacenar las gráficas en diccionarios para la superposición
-            if numero_asociado not in graficas_angulos_por_numero:
-                graficas_angulos_por_numero[numero_asociado] = []
-            graficas_angulos_por_numero[numero_asociado].append(fig_angulos)
+            # Save plots in dictionaries for overlapping
+            if number_associated not in angle_plots_by_number:
+                angle_plots_by_number[number_associated] = []
+            angle_plots_by_number[number_associated].append(fig_angles)
 
-            if numero_asociado not in graficas_perfiles_por_numero:
-                graficas_perfiles_por_numero[numero_asociado] = []
-            graficas_perfiles_por_numero[numero_asociado].append(fig_perfiles)
+            if number_associated not in profile_plots_by_number:
+                profile_plots_by_number[number_associated] = []
+            profile_plots_by_number[number_associated].append(fig_profiles)
 
-    # Procesar archivos ROI
-    for roi_file in os.listdir(carpeta_roi):
+    # Process ROI files
+    for roi_file in os.listdir(folder_roi):
         procesar_archivo_roi(roi_file)
 
 
-    # Iterar sobre cada archivo en la carpeta de gráficos
-    for file_name in os.listdir(carpeta_graficos):
-        # Obtener el ID del gráfico del nombre del archivo
-        graph_id = file_name.split('_')[-1].split('.')[0]
+    # Iterate over each file in plot folder
+    for file_name in os.listdir(plots_folder):
+        # Obtain plot ID
+        plot_id = file_name.split('_')[-1].split('.')[0]
         
-        # Buscar el frame correspondiente en el DataFrame
-        frame = df[df['LABEL'].str.contains(graph_id)]['FRAME'].values
+        # Look for the correspondent frame in the DF
+        frame = df[df['LABEL'].str.contains(plot_id)]['FRAME'].values
         
         
-        # Directorio donde se moverá el gráfico
-        nuevo_dir = os.path.join(carpeta_graficos, f'frame_{frame}/')
+        # Folder to move the plot
+        nuevo_dir = os.path.join(plots_folder, f'frame_{frame}/')
         
-        # Crear el directorio si no existe
+        # Create the path if it doesn't exist
         if not os.path.exists(nuevo_dir):
             os.makedirs(nuevo_dir)
         
-        # Ruta completa del gráfico actual
-        ruta_grafico = os.path.join(carpeta_graficos, file_name)
+        # Path of the current plot
+        path_plot = os.path.join(plots_folder, file_name)
         
-        # Ruta completa de la nueva ubicación del gráfico
-        nueva_ruta_grafico = os.path.join(nuevo_dir, file_name)
+        # New paht
+        new_path_plot = os.path.join(nuevo_dir, file_name)
         
-        # Mover el gráfico al nuevo directorio
-        shutil.move(ruta_grafico, nueva_ruta_grafico)
+        # Move the plot
+        shutil.move(path_plot, new_path_plot)
        
-    for numero_asociado, figuras in graficas_angulos_por_numero.items():
-        fig_combinada_angulos = plt.figure()
-        ax_angulos = fig_combinada_angulos.add_subplot(111, projection='polar')
+    for number_associated, figuras in angle_plots_by_number.items():
+        fig_combinada_angles = plt.figure()
+        ax_angles = fig_combinada_angles.add_subplot(111, projection='polar')
         for fig in figuras:
             if fig.gca().lines:
                 for line in fig.gca().lines:
-                    ax_angulos.plot(line.get_xdata(), line.get_ydata())
-        plt.title(f"Gráficas de ángulos para número asociado {numero_asociado}")
-        plt.savefig(os.path.join(carpeta_graficos, f"Gráficas de ángulos para número asociado {numero_asociado}.png"))
+                    ax_angles.plot(line.get_xdata(), line.get_ydata())
+        plt.title(f"Gráficas de ángulos para número associated {number_associated}")
+        plt.savefig(os.path.join(plots_folder, f"Gráficas de ángulos para número associated {number_associated}.png"))
                     
-    for numero_asociado, figuras in graficas_perfiles_por_numero.items():
-        fig_combinada_perfiles = plt.figure()
-        ax_perfiles = fig_combinada_perfiles.add_subplot(111)
+    for number_associated, figuras in profile_plots_by_number.items():
+        fig_combinada_profiles = plt.figure()
+        ax_profiles = fig_combinada_profiles.add_subplot(111)
         for fig in figuras:
             if fig.gca().lines:
                 for line in fig.gca().lines:
-                    ax_perfiles.plot(line.get_xdata(), line.get_ydata())
-        plt.title(f"Gráficas de perfiles para número asociado {numero_asociado}")
-        plt.savefig(os.path.join(carpeta_graficos, f"Gráficas de perfiles para número asociado {numero_asociado}.png"))
-# Procesar archivos ROI
+                    ax_profiles.plot(line.get_xdata(), line.get_ydata())
+        plt.title(f"Gráficas de profiles para número associated {number_associated}")
+        plt.savefig(os.path.join(plots_folder, f"Gráficas de profiles para número associated {number_associated}.png"))
 
-    # Your code for processing ROI files goes here
 
-for carpeta in os.listdir(carpeta_raiz):
-    carpeta_completa = os.path.join(carpeta_raiz, carpeta)
-    if os.path.isdir(carpeta_completa):
-        procesar_carpeta(carpeta_completa)
+for folder in os.listdir(folder_raiz):
+    folder_completa = os.path.join(folder_raiz, folder)
+    if os.path.isdir(folder_completa):
+        procesar_folder(folder_completa)
