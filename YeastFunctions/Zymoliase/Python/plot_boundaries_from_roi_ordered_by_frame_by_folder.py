@@ -22,33 +22,33 @@ def angles(x, y, x_center, y_center):
     return x_rel, y_rel, theta, r
 
 # Path to root folder
-folder_raiz = "C:/Users/Visitor/Desktop/alvaro/Zymoliase_analyse_trials/"
+root_folder = "C:/Users/Visitor/Desktop/alvaro/Zymoliase_analyse_trials/"
 
 # Function to process ROI files in a folder
-def procesar_folder(folder):
+def process_folder(folder):
     for dirpath, dirnames, filenames in os.walk(folder):
         if 'RoiSet' in dirnames and 'export.csv' in filenames:
-            folder_roi = os.path.join(dirpath, 'RoiSet')
-            path_csv = os.path.join(dirpath, 'export.csv')
-            procesar_archivos_roi(folder_roi, path_csv)  # <-- Pass folder_roi and path_csv as arguments
+            roi_folder = os.path.join(dirpath, 'RoiSet')
+            csv_path = os.path.join(dirpath, 'export.csv')
+            process_roi_files(roi_folder, csv_path)  # <-- Pass roi_folder and csv_path as arguments
 
 # Function to process ROI files in a specific folder
-def procesar_archivos_roi(folder_roi, path_csv):
-    df = pd.read_csv(path_csv, skiprows=range(1, 4))
-    plots_folder = os.path.join(os.path.dirname(folder_roi), 'plots')
+def process_roi_files(roi_folder, csv_path):
+    df = pd.read_csv(csv_path, skiprows=range(1, 4))
+    plots_folder = os.path.join(os.path.dirname(roi_folder), 'plots')
     # Check if the 'plots' folder already exists
     if not os.path.exists(plots_folder):
         os.makedirs(plots_folder)
     else:
-        print(f"'plots' folder already exists in {os.path.dirname(folder_roi)}. Proceeding to the next folder.")
+        print(f"'plots' folder already exists in {os.path.dirname(roi_folder)}. Proceeding to the next folder.")
         return
     os.makedirs(plots_folder, exist_ok=True)
     angle_plots_by_number = {}
     profile_plots_by_number = {}
 
     # Function to process a specific ROI file
-    def procesar_archivo_roi(roi_file):
-        path_archivo_roi = os.path.join(folder_roi, roi_file)
+    def process_archivo_roi(roi_file):
+        path_archivo_roi = os.path.join(roi_folder, roi_file)
         # Leer el archivo de ROI
         rois = read_roi_file(path_archivo_roi)
 
@@ -110,8 +110,8 @@ def procesar_archivos_roi(folder_roi, path_csv):
             profile_plots_by_number[number_associated].append(fig_profiles)
 
     # Process ROI files
-    for roi_file in os.listdir(folder_roi):
-        procesar_archivo_roi(roi_file)
+    for roi_file in os.listdir(roi_folder):
+        process_archivo_roi(roi_file)
 
 
     # Iterate over each file in plot folder
@@ -160,7 +160,7 @@ def procesar_archivos_roi(folder_roi, path_csv):
         plt.savefig(os.path.join(plots_folder, f"Gráficas de profiles para número associated {number_associated}.png"))
 
 
-for folder in os.listdir(folder_raiz):
-    folder_completa = os.path.join(folder_raiz, folder)
+for folder in os.listdir(root_folder):
+    folder_completa = os.path.join(root_folder, folder)
     if os.path.isdir(folder_completa):
-        procesar_folder(folder_completa)
+        process_folder(folder_completa)
