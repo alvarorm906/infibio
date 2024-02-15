@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Feb 13 10:38:04 2024
-
-@author: uib
-"""
 
 import os
 import numpy as np
@@ -27,37 +21,33 @@ def angulos(x, y, x_center, y_center):
     theta = np.arctan2(y_rel, x_rel)
     return x_rel, y_rel, theta, r
 
+# Ruta a la carpeta raíz
+carpeta_raiz = "C:/Users/Visitor/Desktop/alvaro/Zymoliase_analyse_trials/"
 
-# Ruta a la carpeta que contiene los archivos de ROI
-carpeta_input = "C:/Users/uib/Desktop/prueba_script_python"
-carpeta_roi = None
-ruta_csv = None
-
-def buscar_carpeta_y_csv(carpeta):
-    global carpeta_roi, ruta_csv
+# Función para procesar los archivos ROI en una carpeta
+def procesar_carpeta(carpeta):
     for dirpath, dirnames, filenames in os.walk(carpeta):
         if 'RoiSet' in dirnames and 'export.csv' in filenames:
             carpeta_roi = os.path.join(dirpath, 'RoiSet')
             ruta_csv = os.path.join(dirpath, 'export.csv')
-            return True
-    return False
+            procesar_archivos_roi(carpeta_roi, ruta_csv)  # <-- Pass carpeta_roi and ruta_csv as arguments
 
-if not buscar_carpeta_y_csv(carpeta_input):
-    print("No se encontró ninguna carpeta 'RoiSet' o el archivo 'csv' en la carpeta de entrada.")
-    exit()
-
-# Leer el archivo CSV y eliminar las tres primeras filas
-df = pd.read_csv(ruta_csv, skiprows=range(1, 4))
-
-graficas_angulos_por_numero = {}
-graficas_perfiles_por_numero = {}
-
-# Función para procesar los archivos ROI
-def procesar_archivos_roi():
+# Función para procesar los archivos ROI en una carpeta específica
+def procesar_archivos_roi(carpeta_roi, ruta_csv):
+    df = pd.read_csv(ruta_csv, skiprows=range(1, 4))
     carpeta_graficos = os.path.join(os.path.dirname(carpeta_roi), 'graficos')
+    # Check if the 'graficos' folder already exists
+    if not os.path.exists(carpeta_graficos):
+        os.makedirs(carpeta_graficos)
+    else:
+        print(f"'graficos' folder already exists in {os.path.dirname(carpeta_roi)}. Proceeding to the next folder.")
+        return
     os.makedirs(carpeta_graficos, exist_ok=True)
-    
-    for roi_file in os.listdir(carpeta_roi):
+    graficas_angulos_por_numero = {}
+    graficas_perfiles_por_numero = {}
+
+    # Función para procesar un archivo ROI específico
+    def procesar_archivo_roi(roi_file):
         ruta_archivo_roi = os.path.join(carpeta_roi, roi_file)
         # Leer el archivo de ROI
         rois = read_roi_file(ruta_archivo_roi)
@@ -116,6 +106,10 @@ def procesar_archivos_roi():
                 graficas_perfiles_por_numero[numero_asociado] = []
             graficas_perfiles_por_numero[numero_asociado].append(fig_perfiles)
 
+    # Procesar archivos ROI
+    for roi_file in os.listdir(carpeta_roi):
+        procesar_archivo_roi(roi_file)
+
 
     # Iterar sobre cada archivo en la carpeta de gráficos
     for file_name in os.listdir(carpeta_graficos):
@@ -162,4 +156,10 @@ def procesar_archivos_roi():
         plt.title(f"Gráficas de perfiles para número asociado {numero_asociado}")
         plt.savefig(os.path.join(carpeta_graficos, f"Gráficas de perfiles para número asociado {numero_asociado}.png"))
 # Procesar archivos ROI
-procesar_archivos_roi()
+
+    # Your code for processing ROI files goes here
+
+for carpeta in os.listdir(carpeta_raiz):
+    carpeta_completa = os.path.join(carpeta_raiz, carpeta)
+    if os.path.isdir(carpeta_completa):
+        procesar_carpeta(carpeta_completa)
