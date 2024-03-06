@@ -1,0 +1,95 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Feb 28 12:51:22 2024
+
+@author: uib
+"""
+
+from __future__ import division, unicode_literals, print_function  # for compatibility with Python 2 and 3
+import cv2
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+# change the following to %matplotlib notebook for interactive plotting
+%matplotlib inline
+
+# Optionally, tweak styles.
+mpl.rc('figure',  figsize=(10, 5))
+mpl.rc('image', cmap='gray')
+
+import numpy as np
+import pandas as pd
+from pandas import DataFrame, Series  # for convenience
+
+import pims
+import trackpy as tp
+
+  # Take just the green channel
+  
+def read_this(image_file, gray_scale=False):
+    image_src = cv2.imread(image_file)
+    if gray_scale:
+        image_src = cv2.cvtColor(image_src, cv2.COLOR_BGR2GRAY)
+    else:
+        image_src = cv2.cvtColor(image_src, cv2.COLOR_BGR2RGB)
+    return image_src
+def binarize_lib(image_file, thresh_val=127, with_plot=False, gray_scale=False):
+    image_src = read_this(image_file=image_file, gray_scale=gray_scale)
+    th, image_b = cv2.threshold(src=image_src, thresh=thresh_val, maxval=255, type=cv2.THRESH_BINARY)
+    if with_plot:
+        cmap_val = None if not gray_scale else 'gray'
+        fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(10, 20))
+        
+        ax1.axis("off")
+        ax1.title.set_text('Original')
+        
+        ax2.axis("off")
+        ax2.title.set_text("Binarized")
+        
+        ax1.imshow(image_src, cmap=cmap_val)
+        ax2.imshow(image_b, cmap=cmap_val)
+        return True
+    return image_b
+
+try:
+    f = tp.locate(frames[0], 151, invert=True, separation=70, threshold=1000, percentile=75, noise_size=3)
+    tp.annotate(f, frames[0])
+except NameError:
+    frames = pims.open('C:/Users/alvar/Desktop/InFiBio/tiff/*.tif')
+    f = tp.locate(frames[0], 151, invert=True, separation=70, threshold=1000, percentile=75, noise_size=3)
+    tp.annotate(f, frames[0])
+except:
+    print("Error al procesar los frames.")
+
+
+# Convert frames to numpy arrays
+frames_array = np.array(frames[:5])
+# Process a batch of frames
+f = tp.batch(frames[:5], 151, invert=True, separation=70, threshold=1000, percentile=75, noise_size=3)
+
+#Create a blank copy of the first frame to draw annotations on
+annotated_frames = [frame.copy() for frame in frames[:5]]
+
+# Annotate each frame in the batch
+for idx, row in f.iterrows():
+    frame_num = int(row['frame'])
+    x = int(row['x'])
+    y = int(row['y'])
+    # Draw a circle or marker at the particle's position
+    cv2.circle(annotated_frames[frame_num], (x, y), radius=10, color=(121, 255, 121), thickness=-1)
+
+# Annotate each frame in the batch
+for idx, row in f.iterrows():
+    frame_num = int(row['frame'])
+    x = row['x']
+    y = row['y']
+    # Plot the annotated particles on the frame
+    plt.plot(x, y, 'go', markersize=3)  # 'go' means green circle marker
+
+# Set plot title and labels
+plt.title('Annotated Frames')
+plt.xlabel('X-coordinate')
+plt.ylabel('Y-coordinate')
+
+# Show plot
+plt.show()
