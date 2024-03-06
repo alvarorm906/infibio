@@ -1,0 +1,23 @@
+Zymoliase contour analysis pipeline
+
+
+This pipeline looks for analyse the contour of yeast cells. Here we have encounter different problems that must be tackle individually to develop a correct analysis.
+	1st  Since frame-by-frame cells move, there must be a tracking to be sure that along the experiment the analyses is carried out on the same cell. This might be tackled with TrackMate (Fiji) or TrackPy. Trackmate has shown to be useful on our problem, but this brings us to keep changing between different software, the best approach would be to use just one to simplify the workflow.
+	2nd  Once we have tracked the cells, to analyse the contour we can use the Maya’s script. The original one uses inputs from Fiji: threshold image, variance image, raw image. To simplify, I tried to just work with a binarized image, and it did great. Anyway, this carries over the same problem of keep changing between software. The best approach would be to binarize the image in Python or to obtain the variance and threshold image. Far from what it might seem, binarizing an image in Python is quite tricky. So far, I’ve sort out how to binarize them with cv2 package, but I couldn’t find out how to fill the holes.
+	3rd  Once we have the DF from TrackPy and the binarized images or the thresholded and variance images, the issue is to address the contour analysis to each cell and track them frame by frame. I’d try to link the xy centroid position in the DF to the centroid obtained from the Maya’s script.
+	4th  At this point, what’s left is to analyse the curvature from the yeast contour. As Marco says, pixels must be ordered to analyse it. Theoretically, Maya’s script already does it.  
+
+1.	Cell Tracking:
+	a.	Using Trackpy for Python. 
+	b.	Obtaining a DF with xy positions for each cell by frame. This tracks the cell along the frames.
+	c.	Input: Raw Tiff Images, frame by frame.
+2.	From raw to binary image.
+	a.	Using opencv-python (cv2) package.
+	b.	Need of binarize the images to analyse the later with Maya’s script.
+	c.	Somehow address the binary image to the raw one.
+3.	Contour analysis:
+	a.	Using Maya’s script.
+	b.	It returns the contour plotted as the original one and the x and y profiles separately as continuous functions.
+	c.	Apparently, it returns the pixels ordered to analyse the curvature of the contour.
+4.	Batch analysis.
+	a.	Once the steps above are completed, it’s necessary to address each plot to the original cell. As the Maya’s script works, it generates the graphs in order of appearance, since the cells move, this might be tricky to track the same cell frame by frame. Maybe it’s possible to check the cell’s centroid plot by plot and link it to the DF obtained in the first step to keep tracking of the cells.
