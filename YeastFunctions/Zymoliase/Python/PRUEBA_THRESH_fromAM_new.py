@@ -5,6 +5,7 @@ Created on Fri Apr 21 10:43:51 2023
 @author: anusk
 DIRECCIONES
 """
+import os
 import cv2
 from skimage.morphology import closing, square
 import numpy as np
@@ -28,7 +29,8 @@ SOUTH = Directions.SOUTH
 WEST = Directions.WEST
 
 def trace_boundary(image):
-    padded_img = np.pad(image, 1)
+    padded_img = np.pad(np.zeros(image), 1)
+
 
     img = padded_img[1:-1, 1:-1]
     img_north = padded_img[:-2, 1:-1]
@@ -103,19 +105,22 @@ def trace_boundary(image):
 
     return border_pos
 
-path_v = r'C:/Users/xisca/Desktop/Microscopy/04-04-2023/4_1_variance.png'
-image_rgb = cv2.imread(path_v)
-image_1 = rgb2gray(image_rgb)
-image = (image_1*255).astype(np.uint8)
-path_t = r'C:/Users/xisca/Desktop/Microscopy/04-04-2023/4_1_threshold.png'
-thresh_rgb = cv2.imread(path_t)
-thresh_1  = rgb2gray(thresh_rgb).astype('uint8')
-thresh = (thresh_1*255).astype(np.uint8)
-bw = closing(image > thresh, square(3))
+# path_v = r'C:/Users/xisca/Desktop/Microscopy/04-04-2023/4_1_variance.png'
+# image_rgb = cv2.imread(path_v)
+# image_1 = rgb2gray(image_rgb)
+# image = (image_1*255).astype(np.uint8)
+# path_t = r'C:/Users/xisca/Desktop/Microscopy/04-04-2023/4_1_threshold.png'
+# thresh_rgb = cv2.imread(path_t)
+# thresh_1  = rgb2gray(thresh_rgb).astype('uint8')
+# thresh = (thresh_1*255).astype(np.uint8)
+# Leer la imagen usando OpenCV
+ruta_imagen = r'C:/Users/uib/Desktop/prueba_script_python/Exp_Zymolyase01-005_ConA03-2024110/E1/0/tiff/binarized_img/E1.0_0093.tif'
+binary_img = cv2.imread(ruta_imagen, cv2.IMREAD_GRAYSCALE)
 
+# Apply closing operation to binary image
+bw = closing(binary_img > 0, square(3))
 borders = trace_boundary(bw)
-
-img = np.stack([image] * 3, axis=-1)
+img = np.stack([binary_img] * 3, axis=-1)
 for idx, border in enumerate(borders):
     # demonstrate that pixels are in order
     rr_bord, cc_bord = border
@@ -180,7 +185,7 @@ def parametrizacion():
         plt.show()
     return       
 parametrizacion()
-"""
+""
 for i in ([4, 10, 15]):
 
     L = np.arange(0, len(borders[i][0]))
@@ -195,7 +200,7 @@ for i in ([4, 10, 15]):
     plt.xlabel('pixel')
     plt.ylabel('x,y')
     plt.show()
-    """
+   
     # a partir de aqui plotear los coef
     x = borders[i][0]
     x_ft = fft(x)
