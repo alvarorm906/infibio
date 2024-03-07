@@ -8,7 +8,7 @@ This pipeline looks for analyse the contour of yeast cells. Here we have encount
 	4th  At this point, what’s left is to analyse the curvature from the yeast contour. As Marco says, pixels must be ordered to analyse it. Theoretically, Maya’s script already does it.  
 
 1.	Cell Tracking:
-	a.	Using Trackpy for Python. 
+	a.	Using Trackpy for Python (https://github.com/alvarorm906/infibio/blob/main/YeastFunctions/Zymoliase/Python/1_trackpy_trial.ipy). 
 	b.	Obtaining a DF with xy positions for each cell by frame. This tracks the cell along the frames.
 	c.	Input: Raw Tiff Images, frame by frame.
 2.	From raw to binary image.
@@ -16,7 +16,7 @@ This pipeline looks for analyse the contour of yeast cells. Here we have encount
 	b.	Need of binarize the images to analyse the later with Maya’s script.
 	c.	Somehow address the binary image to the raw one.
 3.	Contour analysis:
-	a.	Using Maya’s script.
+	a.	Using Maya’s script (https://github.com/alvarorm906/infibio/edit/main/YeastFunctions/Zymoliase/Python/PRUEBA_THRESH_fromAM_new.py).
 	b.	It returns the contour plotted as the original one and the x and y profiles separately as continuous functions.
 	c.	Apparently, it returns the pixels ordered to analyse the curvature of the contour.
 4.	Batch analysis.
