@@ -1,3 +1,7 @@
+%%%% This function extracts the binarized image from a TIF raw image. Cells binarized are enumerated in order to make easier the review of the images. The output is a .m file and a .csv files with
+%%%% the parameters specified in region props ('Area', 'Centroid', 'FilledArea','ConvexArea', 'Perimeter', 'Circularity', 'Eccentricity', to date [2024.03.04])
+
+
 function image_analysis_cell_AR_V2(route, myFolder)
 
 [X,~] = imread(route);
@@ -7,6 +11,8 @@ BW = imbinarize(im2gray(X), 'adaptive', 'Sensitivity', 0.680000, 'ForegroundPola
 BW = imcomplement(BW);
 BW = imfill(BW, 'holes');
 BW = imclearborder(BW);
+
+% Filter those areas smaller than 2500 to avoid noise
 BW_out = bwpropfilt(BW,'Area',[2500 + eps(2500), Inf]);
 
 propsbw = regionprops(BW_out, {'Area', 'Centroid', 'FilledArea','ConvexArea', 'Perimeter', 'Circularity', 'Eccentricity'});
