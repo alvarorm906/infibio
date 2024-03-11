@@ -1,4 +1,5 @@
 March, 08, 2024.
+
 As we have talked earlier, let's develope everything on matlab since Python haven't shown good performance on tracking cells (at least I haven't found how to do).
 I've created this txt doc as a log, to keep constance of the advances developing the pipeline that I'll write under these lines. So far, in matlab has been developed
 the function to obtain the features of the cells (https://github.com/alvarorm906/infibio/blob/main/YeastFunctions/Zymoliase/Matlab/image_analysis_cell_AR_V2.m) and
@@ -26,3 +27,10 @@ them frame by frame.
   d. Need to transalete it to Matlab
 4.	Batch analysis.
 	a.	Once the steps above are completed, it’s necessary to address each plot to the original cell. As the Maya’s script works, it generates the graphs in order of appearance, since the cells move, this might be tricky to track the same cell frame by frame. Maybe it’s possible to check the cell’s centroid plot by plot and link it to the DF obtained in the first step to keep tracking of the cells.
+
+
+March, 11, 2024.
+
+I've uploaded a new file in alvaro's folder called lap_tracker.m (https://github.com/alvarorm906/infibio/blob/main/YeastFunctions/Zymoliase/Matlab/alvaro/lap_tracker.m)
+that uses the Linear Assignment Tracking toolbox (https://es.mathworks.com/matlabcentral/fileexchange/129254-linear-assignment-cell-tracker) for tracking the cells 
+with the propsbw features structure as input. It seems to work particularly well, though it's just been tested with the first 15 frames from the experiment Exp_Zymolyase01-005_ConA03-2024110 with the raw TIF images. Also, I've upload in the same folder (alvaro) the matlab files this toolbox uses to do the tracking
