@@ -24,7 +24,7 @@ filePattern = fullfile(myFolder, ['*.tif' ...
 theFiles = dir(filePattern);
 
 
-for frame = 1:15
+for frame = 1:5
 % From here to ` [propsbw_cleaned.Enumeration] = enumerationColumn{:};` is
 % copied from script_image_analysis_AR_V1.m
     baseFileName = theFiles(frame).name;
@@ -93,7 +93,10 @@ hold on;
 
 %Get the TrackArray for data analysis
 trackData = linker.tracks;
-for frame = 1:15
+numTracks = numel(trackData.Tracks);  % Get the number of tracks
+cmap = hsv(numTracks);
+handles = gobjects(numTracks, 1);
+for frame = 1:5
     baseFileName = theFiles(frame).name;
     fullFileName = fullfile(theFiles(frame).folder, baseFileName);
     [X,~] = imread(fullFileName)
@@ -104,22 +107,18 @@ for frame = 1:15
     imshow(BW, 'InitialMagnification', 'fit', 'Border', 'tight', 'XData', [1 size(BW, 2)], 'YData', [1 size(BW, 1)]);
     alpha(0.10);  % Set transparency to 50%  % Create a new figure for the plot
     hold on;
-end
-% Assuming trackData is a struct containing track information
-
-numTracks = numel(trackData.Tracks);  % Get the number of tracks
-
-
-cmap = hsv(numTracks);
-handles = gobjects(numTracks, 1);
-for i = 1:numTracks
-    numCentroids = numel(trackData.Tracks(i).Data.Centroid);
-    text(centroid(1), centroid(2), sprintf('Track %d', i), 'Color', 'r', 'FontSize', 8, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
-    for j = 2:numCentroids
-        centroid = trackData.Tracks(i).Data.Centroid{1,j};  % Get the centroid for the current track
-        % Plot the centroid with the track index as the color index
-        handles(i) = plot(centroid(1), centroid(2), 'o', 'Color', cmap(i,:));
+    for i = 1:numTracks
+            numCentroids = numel(trackData.Tracks(i).Data.Centroid);
+            for j = 2:numCentroids
+                centroid = trackData.Tracks(i).Data.Centroid{j};  % Corrected index to start from 2
+                % Plot the centroid with the track index as the color index
+                handles(i) = plot(centroid(1), centroid(2), 'o', 'Color', cmap(i,:));
+            end
+        end
     end
+for i = 1:numTracks
+    centroid = trackData.Tracks(i).Data.Centroid{2};  % Assuming at least one centroid exists for each track
+    text(centroid(1), centroid(2), sprintf('Track %d', i), 'Color', 'r', 'FontSize', 8, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
 end
 
 hold off;  % Release the hold on the plot
