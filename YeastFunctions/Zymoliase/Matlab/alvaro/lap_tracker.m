@@ -24,7 +24,7 @@ filePattern = fullfile(myFolder, ['*.tif' ...
 theFiles = dir(filePattern);
 
 
-for frame = 1:5
+for frame = 1:3
 % From here to ` [propsbw_cleaned.Enumeration] = enumerationColumn{:};` is
 % copied from script_image_analysis_AR_V1.m
     baseFileName = theFiles(frame).name;
@@ -34,11 +34,10 @@ for frame = 1:5
     BW = imcomplement(BW);
     BW = imfill(BW, 'holes');
     BW = imclearborder(BW);
-    imshow(BW, 'InitialMagnification', 'fit', 'Border', 'tight', 'XData', [1 size(BW, 2)], 'YData', [1 size(BW, 1)]);
-    alpha(0.99);  % Set transparency to 50%  % Create a new figure for the plot
-    hold on;
     BW_out = bwpropfilt(BW,'Area',[2500 + eps(2500), Inf]);
-    propsbw = regionprops(BW_out, {'Area', 'Centroid', 'FilledArea','ConvexArea', 'Perimeter', 'Circularity', 'Eccentricity'});
+    BW_borders = bwperim(BW_out);
+    perimeter = regionprops(bwconncomp(BW_borders),{'PixelList'});
+    propsbw = regionprops(bwconncomp(BW_out), {'Area', 'Centroid', 'FilledArea','ConvexArea', 'Perimeter', 'Circularity', 'Eccentricity'});
     propsbw_cleaned = struct('Area', [], 'Centroid', [], 'FilledArea', [], 'ConvexArea', [], 'Perimeter', [], 'Circularity', [], 'Eccentricity', []);
     BW_out_uint8 = im2uint8(BW_out);
     centroidPositions = zeros(numel(propsbw_cleaned), 2);
@@ -72,6 +71,7 @@ for frame = 1:5
     for i = 1:length(propsbw_cleaned)
         propsbw_cleaned(i).Time = [];
         propsbw_cleaned(i).Enumeration = [];
+        propsbw_cleaned(i).Border = [];
         enumerationColumn{i} = num2str(i);
     end
     
@@ -82,7 +82,11 @@ for frame = 1:5
     
     enumerationColumn = enumerationColumn(~cellfun('isempty', enumerationColumn));
     [propsbw_cleaned.Enumeration] = enumerationColumn{:};
-
+    
+    for i = 1:length(propsbw_cleaned)
+        
+        propsbw_cleaned(i).Border = perimeter(i).PixelList;
+    end
     %Link objects
     linker = assignToTrack(linker, frame, propsbw_cleaned);
 
@@ -96,7 +100,7 @@ trackData = linker.tracks;
 numTracks = numel(trackData.Tracks);  % Get the number of tracks
 cmap = hsv(numTracks);
 handles = gobjects(numTracks, 1);
-for frame = 1:5
+for frame = 1:3
     baseFileName = theFiles(frame).name;
     fullFileName = fullfile(theFiles(frame).folder, baseFileName);
     [X,~] = imread(fullFileName)
@@ -127,8 +131,5 @@ hold off;  % Release the hold on the plot
 xlabel('X-coordinate');  % Label for x-axis
 ylabel('Y-coordinate');  % Label for y-axis
 title('Centroids of Tracks');  % Title for the plot
-
-
-
 
 
