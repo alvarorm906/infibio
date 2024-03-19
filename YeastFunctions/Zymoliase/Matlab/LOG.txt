@@ -37,4 +37,4 @@ with the regionprops features structure as input. It seems to work particularly 
 
 March, 19, 2024.
 
-I've uploaded a new file called trace_boundary.m. In this file I've managed to translate from Python to Matlab Ana's script until line 70. This loop is supposed to work as a track of coordinates, obtaining the coordinates of those pixels different from 0 to localize the positions of the border. There are some issues on updating the positions while iterating over the unprocessed_border. 
+I've uploaded a new file called trace_boundary.m. In this file I've managed to translate from Python to Matlab Ana's script until line 70. This loop is supposed to work as a track of coordinates, obtaining the coordinates of those pixels different from 0 to localize the positions of the border. There are some issues on updating the positions while iterating over the unprocessed_border. I've also uploaded calculate_mass_center.m and angulos.m, functions inside Ana's scripts. trace_boundary.m script is meant to be used as a function as well.
