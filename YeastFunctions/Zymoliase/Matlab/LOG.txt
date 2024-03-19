@@ -33,4 +33,8 @@ March, 11, 2024.
 
 I've uploaded a new file in alvaro's folder called lap_tracker.m (https://github.com/alvarorm906/infibio/blob/main/YeastFunctions/Zymoliase/Matlab/alvaro/lap_tracker.m)
 that uses the Linear Assignment Tracking toolbox (https://es.mathworks.com/matlabcentral/fileexchange/129254-linear-assignment-cell-tracker) for tracking the cells 
-with the regionprops features structure as input. It seems to work particularly well, though it's just been tested with the first 15 frames from the experiment Exp_Zymolyase01-005_ConA03-2024110 with the raw TIF images. Also, I've upload in the same folder (alvaro) the matlab files this toolbox uses (LAPLinker.m and TrackArray.m) to do the tracking
+with the regionprops features structure as input. It seems to work particularly well, though it's just been tested with the first 15 frames from the experiment Exp_Zymolyase01-005_ConA03-2024110 with the raw TIF images. Also, I've upload in the same folder (alvaro) the matlab files this toolbox uses (LAPLinker.m and TrackArray.m) to do the tracking.
+
+March, 19, 2024.
+
+I've uploaded a new file called trace_boundary.m. In this file I've managed to translate from Python to Matlab Ana's script until line 70. This loop is supposed to work as a track of coordinates, obtaining the coordinates of those pixels different from 0 to localize the positions of the border. There are some issues on updating the positions while iterating over the unprocessed_border. 
