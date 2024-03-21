@@ -6,34 +6,33 @@ the function to obtain the features of the cells (https://github.com/alvarorm906
 the script to apply this function file-by-file in a folder (https://github.com/alvarorm906/infibio/blob/main/YeastFunctions/Zymoliase/Matlab/script_image_analysis_AR_V1.m).
 The pipeline here in development aims to solve the following problems (already written in https://github.com/alvarorm906/infibio/blob/main/YeastFunctions/Zymoliase/Python/Zymoliase%20contour%20analysis%20pipeline.txt)
 
-	1st  Since frame-by-frame cells move, there must be a tracking to be sure that along the experiment the analyses is carried out on the same cell. 
+	1st  Since frame-by-frame cells move, there must be a tracking to be sure that along the experiment the analyses are carried out on the same cell. 
 	2nd  Once we have tracked the cells, to analyse the contour we can use the Maya’s script. The original one uses inputs from Fiji: threshold image, variance image, raw image. 
-To simplify, I tried to just work with a binarized image, and it did great. We could use the same binarized images from Matlab, but we should translate Maya's script to Matlab.
-	3rd  Once we have the cells trackes, the issue is to address the contour analysis from Maya's script to each cell and track 
-them frame by frame. 
+		To simplify, I tried to just work with a binarized image, and it did great. We could use the same binarized images from Matlab, but we should translate Maya's script to Matlab.
+	3rd  Once we have the cells tracked, the issue is to address the contour analysis from Maya's script to each cell and track them frame by frame. 
 	4th  At this point, what’s left is to analyse the curvature from the yeast contour. As Marco says, pixels must be ordered to analyse it. Theoretically, Maya’s script already does it.  
 
-1.	Cell Tracking:
-	a. Tracking Marco's folder (https://github.com/alvarorm906/infibio/tree/main/YeastFunctions/Zymoliase/Matlab/marco/tracking). 
+1.	Cell Tracking.
+	a. 	Tracking Marco's folder (https://github.com/alvarorm906/infibio/tree/main/YeastFunctions/Zymoliase/Matlab/marco/tracking). 
 	b.	Input: Raw Tiff Images, frame by frame.
 2.	From raw to binary image.
-	a.	Using imbinarize function from matlab..
+	a.	Using imbinarize function from Matlab.
 	b.	Needing of binarize images to analyse the later with Maya’s script.
 	c.	Somehow address the binary image to the raw one.
-3.	Contour analysis:
+3.	Contour analysis.
 	a.	Using Maya’s script (https://github.com/alvarorm906/infibio/edit/main/YeastFunctions/Zymoliase/Python/PRUEBA_THRESH_fromAM_new.py).
 	b.	It returns the contour plotted as the original one and the x and y profiles separately as continuous functions.
 	c.	Apparently, it returns the pixels ordered to analyse the curvature of the contour.
-  d. Need to transalete it to Matlab
+  	d. 	Need to translate it to Matlab.
 4.	Batch analysis.
-	a.	Once the steps above are completed, it’s necessary to address each plot to the original cell. As the Maya’s script works, it generates the graphs in order of appearance, since the cells move, this might be tricky to track the same cell frame by frame. Maybe it’s possible to check the cell’s centroid plot by plot and link it to the DF obtained in the first step to keep tracking of the cells.
+	a.	Once the steps above are completed, it’s necessary to address each plot to the original cell. As the Maya’s script works, it generates the graphs in order of appearance, since the cells move, this might be 		tricky to track the same cell frame by frame. Maybe it’s possible to check the cell’s centroid plot by plot and link it to the DF obtained in the first step to keep tracking of the cells.
+	b.	Starting point of main analyses: perform the comparison across conditions of the experiments (time series analysis, and regarding the concentration of the zymolyase and the temperature).
 
 
 March, 11, 2024.
 
 I've uploaded a new file in alvaro's folder called lap_tracker.m (https://github.com/alvarorm906/infibio/blob/main/YeastFunctions/Zymoliase/Matlab/alvaro/lap_tracker.m)
-that uses the Linear Assignment Tracking toolbox (https://es.mathworks.com/matlabcentral/fileexchange/129254-linear-assignment-cell-tracker) for tracking the cells 
-with the regionprops features structure as input. It seems to work particularly well, though it's just been tested with the first 15 frames from the experiment Exp_Zymolyase01-005_ConA03-2024110 with the raw TIF images. Also, I've upload in the same folder (alvaro) the matlab files this toolbox uses (LAPLinker.m and TrackArray.m) to do the tracking.
+that uses the Linear Assignment Tracking toolbox (https://es.mathworks.com/matlabcentral/fileexchange/129254-linear-assignment-cell-tracker) for tracking the cells with the regionprops features structure as input. It seems to work particularly well, though it's just been tested with the first 15 frames from the experiment Exp_Zymolyase01-005_ConA03-2024110 with the raw TIF images. Also, I've upload in the same folder (alvaro) the matlab files this toolbox uses (LAPLinker.m and TrackArray.m) to do the tracking.
 
 March, 19, 2024.
 
