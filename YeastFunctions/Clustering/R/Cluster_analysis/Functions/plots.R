@@ -3,6 +3,8 @@ plots <- function (df, bins=100, path_save){
   library(ggplot2)
 
   
+    df<- df %>% 
+    arrange(Time)
   
   # Define outlier criterion (for example, values outside 1.5 * IQR)
   lower_bound <- quantile(df$area_norm, 0.25) - 5 * IQR(df$area_norm)
@@ -11,6 +13,17 @@ plots <- function (df, bins=100, path_save){
   # Filter out outliers
   df_filtered <- df %>%
     filter(area_norm >= lower_bound  & area_norm <= upper_bound )
+  # Reordenar el factor Time para que esté en orden numérico
+  df_filtered$Time <- factor(df_filtered$Time, levels = unique(df_filtered$Time))
+  
+  # Crear el gráfico ordenando según el tiempo
+  ggplot(df_filtered, aes(x = area_norm, fill = as.factor(Time))) +
+    geom_histogram(binwidth = (max(df_filtered$area_norm) - min(df_filtered$area_norm)) / bins, alpha = 0.5, position = "identity") +
+    ggtitle("Distribution of Areas per Time (Excluding Outliers)") +
+    xlab("Area normalized") +
+    ylab("Count") +
+    theme_minimal() +
+    facet_wrap(~Time, scales = "free_x")  # Ordenar los gráficos según el factor Time
   
   # Plot relative count of areas per time using bins after filtering outliers
   ggplot(df_filtered, aes(x = area_norm, fill = as.factor(Time))) +

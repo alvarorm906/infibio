@@ -7,7 +7,7 @@ tests <- function (df, path_save){
 
   # Save ANOVA summary to CSV
   anova_summary <- summary(anova_result)
-  capture.output(summary(anova_result),file=paste0(path_save,"\\results","\\anova.xls"))   
+  capture.output(summary(anova_result),file=paste0(path_save,"\\results","\\anova.csv"))   
   # Extract individual tables from Tukey result and save to CSV
-  capture.output(summary(tukey_result),file=paste0(path_save,"\\results","\\tukey.xls"))
+  capture.output(tukey_result,file=paste0(path_save,"\\results","\\tukey.csv"))
 }
