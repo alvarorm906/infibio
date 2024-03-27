@@ -1,0 +1,2 @@
+In order to preprocess the data, it's been developed the file 'classification_cells_not_wanted.rds', a kernlab model developed with the library Caret to distinguish between weird shaped yeast cells (because of the binarization) from normal shaped cells.
+This RDS file has been created using the 'predict_weird_shape_kernlab_model.rmd' file and the database folder. It can be improved and retrained. To implement the filtering, you can follow the first lines of the 'check_population_equality.Rmd' file.
